@@ -1,7 +1,7 @@
 Summary:	Generic library for reporting various problems
 Name:		libreport
 Version:	2.0.16
-Release:	0.1
+Release:	1
 License:	GPL v2
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
@@ -186,14 +186,11 @@ ticketing system.
 %patch0 -p1
 
 %build
-%configure \
-	%{!?with_static_libs:--disable-static}
+%configure
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-# create directories if necessary
-#install -d $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -207,6 +204,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
+
+%post	web -p /sbin/ldconfig
+%postun	web -p /sbin/ldconfig
+
+%post	gtk -p /sbin/ldconfig
+%postun	gtk -p /sbin/ldconfig
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
