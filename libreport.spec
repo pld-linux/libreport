@@ -1,4 +1,5 @@
 Summary:	Generic library for reporting various problems
+Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
 Version:	2.0.16
 Release:	4
@@ -16,6 +17,7 @@ BuildRequires:	desktop-file-utils
 BuildRequires:	gettext
 BuildRequires:	gtk+3-devel
 BuildRequires:	intltool
+BuildRequires:	json-c-devel
 BuildRequires:	libproxy-devel
 BuildRequires:	libtar-devel
 BuildRequires:	libtool
@@ -33,89 +35,113 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Libraries providing API for reporting different problems in
 applications to different bug targets like Bugzilla, ftp, trac, etc...
 
-%package common
-Summary:	Common files for %{name} library
-Summary(pl.UTF-8):	Wspólne pliki biblioteki %{name}
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-
-%description common
-Common files for %{name} library.
-
-%description common -l pl.UTF-8
-Wspólne pliki biblioteki %{name}.
+%description -l pl.UTF-8
+Biblioteki udostępniające API do zgłaszania różnych programów w
+aplikacjach do różnych docelowych systemów raportowania błędów, takich
+jak Bugzilla, ftp, trac...
 
 %package devel
-Summary:	Header files for %{name} library
-Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki %{name}
+Summary:	Header files for libreport libraries
+Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek libreport
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
-Header files for %{name} library.
+Header files for libreport libraries.
 
 %description devel -l pl.UTF-8
-Pliki nagłówkowe biblioteki %{name}.
+Pliki nagłówkowe bibliotek libreport.
 
 %package web
 Summary:	Library providing network API for libreport
+Summary(pl.UTF-8):	Biblioteka zapewniająca API sieciowe dla libreport
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description web
-Library providing network API for libreport
+Library providing network API for libreport.
+
+%description web -l pl.UTF-8
+Biblioteka zapewniająca API sieciowe dla libreport.
 
 %package web-devel
 Summary:	Development headers for libreport-web
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libreport-web
 Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-web = %{version}-%{release}
 
 %description web-devel
-Development headers for libreport-web
+Development headers for libreport-web.
+
+%description web-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki libreport-web.
 
 %package python
-Summary:	Python bindings for report-libs
-Group:		Libraries
+Summary:	Python bindings for libreport libraries
+Summary(pl.UTF-8):	Wiązania Pythona dla bibliotek libreport
+Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 
 %description python
-Python bindings for report-libs.
+Python bindings for libreport libraries.
+
+%description python -l pl.UTF-8
+Wiązania Pythona dla bibliotek libreport
 
 %package cli
-Summary:	%{name}'s command line interface
-Group:		X11/Applications
+Summary:	libreport's command line interface
+Summary(pl.UTF-8):	Interfejs linii poleceń libreport
+Group:		Applications
 Requires:	%{name} = %{version}-%{release}
 
 %description cli
 This package contains simple command line tool for working with
-problem dump reports
+problem dump reports.
+
+%description cli -l pl.UTF-8
+Ten pakiet zawiera proste, działające z linii poleceń narzędzie do
+pracy ze zgłoszeniami zawierającymi zrzuty problemów.
 
 %package newt
-Summary:	%{name}'s newt interface
-Group:		X11/Applications
+Summary:	libreport's newt interface
+Summary(pl.UTF-8):	Interfejs newt libreport
+Group:		Applications
 Requires:	%{name} = %{version}-%{release}
 
 %description newt
-This package contains a simple newt application for reporting bugs
+This package contains a simple newt application for reporting bugs.
+
+%description newt -l pl.UTF-8
+Ten pakiet zawiera prostą aplikację newt do zgłaszania błędów.
 
 %package gtk
-Summary:	GTK front-end for libreport
+Summary:	GTK+ front-end for libreport
+Summary(pl.UTF-8):	Interfejs GTK+ libreport
 Group:		X11/Applications
 Requires:	%{name} = %{version}-%{release}
 
 %description gtk
-Applications for reporting bugs using libreport backend
+Application for reporting bugs using libreport backend.
+
+%description gtk -l pl.UTF-8
+Aplikacja do zgłaszania błędów przy użyciu libreport.
 
 %package gtk-devel
-Summary:	Development libraries and headers for libreport
+Summary:	Development headers for libreport-gtk
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libreport-gtk
 Group:		Development/Libraries
 Requires:	%{name}-gtk = %{version}-%{release}
 
 %description gtk-devel
-Development libraries and headers for libreport-gtk
+Development headers for libreport-gtk.
+
+%description gtk-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki libreport-gtk.
 
 %package plugin-kerneloops
-Summary:	%{name}'s kerneloops reporter plugin
+Summary:	libreport's kerneloops reporter plugin
+Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń awarii jądra (kerneloops)
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	curl
@@ -124,8 +150,13 @@ Requires:	curl
 This package contains plugin which sends kernel crash information to
 specified server, usually to kerneloops.org.
 
+%description plugin-kerneloops -l pl.UTF-8
+Ten pakiet zawiera wtyczkę wysyłającą informacje o awariach jądra na
+określony serwer, zwykle kerneloops.org.
+
 %package plugin-logger
-Summary:	%{name}'s logger reporter plugin
+Summary:	libreport's logger reporter plugin
+Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń w logu
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	abrt-plugin-logger < 2.0.4
@@ -133,8 +164,13 @@ Obsoletes:	abrt-plugin-logger < 2.0.4
 %description plugin-logger
 The simple reporter plugin which writes a report to a specified file.
 
+%description plugin-logger -l pl.UTF-8
+Prosta wtyczka zgłaszająca problem, zapisująca raport w określonym
+pliku.
+
 %package plugin-mailx
-Summary:	%{name}'s mailx reporter plugin
+Summary:	libreport's mailx reporter plugin
+Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez pocztę elektroniczną
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	mailx
@@ -144,26 +180,38 @@ Obsoletes:	abrt-plugin-mailx < 2.0.4
 The simple reporter plugin which sends a report via mailx to a
 specified email address.
 
+%description plugin-mailx -l pl.UTF-8
+Prosta wtyczka zgłaszająca problem, wysyłająca raport na określony
+adres e-mail przy użyciu programu mailx.
+
 %package plugin-bugzilla
-Summary:	%{name}'s bugzilla plugin
+Summary:	libreport's bugzilla plugin
+Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez Bugzillę
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	abrt-plugin-bugzilla < 2.0.4
 
-%package plugin-ureport
-Summary:	%{name}'s micro report plugin
-Group:		Libraries
-BuildRequires:	json-c-devel
-Requires:	%{name} = %{version}-%{release}
-
-%description plugin-ureport
-Uploads micro-report to abrt server
-
 %description plugin-bugzilla
 Plugin to report bugs into the bugzilla.
 
+%description plugin-bugzilla -l pl.UTF-8
+Wtyczka zgłaszająca problemy do systemu Bugzilla.
+
+%package plugin-ureport
+Summary:	libreport's micro report plugin
+Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń typu micro-report
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description plugin-ureport
+Uploads micro-report to abrt server.
+
+%description plugin-ureport -l pl.UTF-8
+Wtyczka przesyłająca raporty typu micro-report na serwer abrt.
+
 %package plugin-rhtsupport
-Summary:	%{name}'s RHTSupport plugin
+Summary:	libreport's RHTSupport plugin
+Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez RHTSupport
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	abrt-plugin-rhtsupport < 2.0.4
@@ -171,8 +219,12 @@ Obsoletes:	abrt-plugin-rhtsupport < 2.0.4
 %description plugin-rhtsupport
 Plugin to report bugs into RH support system.
 
+%description plugin-rhtsupport -l pl.UTF-8
+Wtyczka zgłaszająca problemy do systemu obsługi RH.
+
 %package plugin-reportuploader
-Summary:	%{name}'s reportuploader plugin
+Summary:	libreport's reportuploader plugin
+Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez FTP
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	abrt-plugin-reportuploader < 2.0.4
@@ -180,6 +232,10 @@ Obsoletes:	abrt-plugin-reportuploader < 2.0.4
 %description plugin-reportuploader
 Plugin to report bugs into anonymous FTP site associated with
 ticketing system.
+
+%description plugin-reportuploader -l pl.UTF-8
+Wtyczka zgłaszająca błędy poprzez serwer anonimowego FTP powiązany z
+systemem biletów.
 
 %prep
 %setup -q
@@ -214,23 +270,22 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc README
+%dir %{_sysconfdir}/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}/report_event.conf
 %config(noreplace) %{_sysconfdir}/%{name}/forbidden_words.conf
+%dir %{_sysconfdir}/%{name}/events.d
+%dir %{_sysconfdir}/%{name}/events
+%dir %{_sysconfdir}/%{name}/plugins
 %attr(755,root,root) %{_libdir}/libreport.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libreport.so.0
 %attr(755,root,root) %{_libdir}/libabrt_dbus.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libabrt_dbus.so.0
 %{_mandir}/man5/report_event.conf.5*
 
-%files common
-%defattr(644,root,root,755)
-%dir %{_sysconfdir}/%{name}
-%dir %{_sysconfdir}/%{name}/events.d
-%dir %{_sysconfdir}/%{name}/events
-%dir %{_sysconfdir}/%{name}/plugins
-
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libreport.so
+%attr(755,root,root) %{_libdir}/libabrt_dbus.so
 %dir %{_includedir}/libreport
 %{_includedir}/libreport/client.h
 %{_includedir}/libreport/dump_dir.h
@@ -240,8 +295,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libreport/run_event.h
 %{_includedir}/libreport/internal_abrt_dbus.h
 %{_includedir}/libreport/internal_libreport.h
-%attr(755,root,root) %{_libdir}/libreport.so
-%attr(755,root,root) %{_libdir}/libabrt_dbus.so
 %{_pkgconfigdir}/%{name}.pc
 
 %files web
@@ -283,46 +336,46 @@ rm -rf $RPM_BUILD_ROOT
 
 %files plugin-kerneloops
 %defattr(644,root,root,755)
-%{_sysconfdir}/libreport/events/report_Kerneloops.xml
 %attr(755,root,root) %{_bindir}/reporter-kerneloops
+%{_sysconfdir}/libreport/events/report_Kerneloops.xml
 %{_mandir}/man1/reporter-kerneloops.1*
 
 %files plugin-logger
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/reporter-print
 %{_sysconfdir}/libreport/events/report_Logger.conf
 %{_sysconfdir}/libreport/events/report_Logger.xml
 %config(noreplace) %{_sysconfdir}/libreport/events.d/print_event.conf
-%attr(755,root,root) %{_bindir}/reporter-print
 %{_mandir}/man1/reporter-print.1*
 
 %files plugin-mailx
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/reporter-mailx
 %config(noreplace) %{_sysconfdir}/libreport/plugins/mailx.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/mailx_event.conf
 %{_sysconfdir}/libreport/events/report_Mailx.xml
-%attr(755,root,root) %{_bindir}/reporter-mailx
 %{_mandir}/man1/reporter-mailx.1*
+
+%files plugin-bugzilla
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/reporter-bugzilla
+%config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla.conf
+%config(noreplace) %{_sysconfdir}/libreport/events/report_Bugzilla.conf
+%config(noreplace) %{_sysconfdir}/libreport/events.d/bugzilla_event.conf
+%{_sysconfdir}/libreport/events/report_Bugzilla.xml
+%{_mandir}/man1/reporter-bugzilla.1*
 
 %files plugin-ureport
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-ureport
 %{_sysconfdir}/libreport/events/report_uReport.xml
 
-%files plugin-bugzilla
-%defattr(644,root,root,755)
-%config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla.conf
-%config(noreplace) %{_sysconfdir}/libreport/events/report_Bugzilla.conf
-%config(noreplace) %{_sysconfdir}/libreport/events.d/bugzilla_event.conf
-%{_sysconfdir}/libreport/events/report_Bugzilla.xml
-%attr(755,root,root) %{_bindir}/reporter-bugzilla
-%{_mandir}/man1/reporter-bugzilla.1*
-
 %files plugin-rhtsupport
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/reporter-rhtsupport
 %config(noreplace) %{_sysconfdir}/libreport/plugins/rhtsupport.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/rhtsupport_event.conf
 %{_sysconfdir}/libreport/events/report_RHTSupport.xml
-%attr(755,root,root) %{_bindir}/reporter-rhtsupport
 %{_mandir}/man1/reporter-rhtsupport.1*
 
 %files plugin-reportuploader
