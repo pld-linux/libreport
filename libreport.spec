@@ -1,12 +1,12 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.0.16
-Release:	4
-License:	GPL v2
+Version:	2.1.0
+Release:	1
+License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	b8aa7475152dc8420d7dd0c71752b5ed
+# Source0-md5:	761e4393411cdac13e72d832bd383dd2
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
@@ -14,21 +14,23 @@ BuildRequires:	btparser-devel
 BuildRequires:	curl-devel
 BuildRequires:	dbus-devel
 BuildRequires:	desktop-file-utils
-BuildRequires:	gettext
-BuildRequires:	gtk+3-devel
-BuildRequires:	intltool
+BuildRequires:	gettext-devel >= 0.17
+BuildRequires:	glib2-devel >= 1:2.21
+BuildRequires:	gtk+3-devel >= 3.0
+BuildRequires:	intltool >= 0.35.0
 BuildRequires:	json-c-devel
 BuildRequires:	libproxy-devel
 BuildRequires:	libtar-devel
 BuildRequires:	libtool
-BuildRequires:	libxml2-devel
+BuildRequires:	libxml2-devel >= 2
 BuildRequires:	newt-devel
 BuildRequires:	nss-devel
+BuildRequires:	pkgconfig
 BuildRequires:	python-devel
-BuildRequires:	texinfo
 BuildRequires:	xmlrpc-c-client-devel
 BuildRequires:	xmlrpc-c-devel
 BuildRequires:	xmlto
+Requires:	glib2 >= 1:2.21
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -45,6 +47,7 @@ Summary:	Header files for libreport libraries
 Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek libreport
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	glib2-devel >= 1:2.21
 
 %description devel
 Header files for libreport libraries.
@@ -70,6 +73,13 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libreport-web
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-web = %{version}-%{release}
+Requires:	btparser-devel
+Requires:	curl-devel
+Requires:	json-c-devel
+Requires:	libproxy-devel
+Requires:	libxml2-devel >= 2
+Requires:	xmlrpc-c-client-devel
+Requires:	xmlrpc-c-devel
 
 %description web-devel
 Development headers for libreport-web.
@@ -139,6 +149,19 @@ Development headers for libreport-gtk.
 %description gtk-devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki libreport-gtk.
 
+%package plugin-bugzilla
+Summary:	libreport's bugzilla plugin
+Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez Bugzillę
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+Obsoletes:	abrt-plugin-bugzilla < 2.0.4
+
+%description plugin-bugzilla
+Plugin to report bugs into the bugzilla.
+
+%description plugin-bugzilla -l pl.UTF-8
+Wtyczka zgłaszająca problemy do systemu Bugzilla.
+
 %package plugin-kerneloops
 Summary:	libreport's kerneloops reporter plugin
 Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń awarii jądra (kerneloops)
@@ -184,44 +207,6 @@ specified email address.
 Prosta wtyczka zgłaszająca problem, wysyłająca raport na określony
 adres e-mail przy użyciu programu mailx.
 
-%package plugin-bugzilla
-Summary:	libreport's bugzilla plugin
-Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez Bugzillę
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-Obsoletes:	abrt-plugin-bugzilla < 2.0.4
-
-%description plugin-bugzilla
-Plugin to report bugs into the bugzilla.
-
-%description plugin-bugzilla -l pl.UTF-8
-Wtyczka zgłaszająca problemy do systemu Bugzilla.
-
-%package plugin-ureport
-Summary:	libreport's micro report plugin
-Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń typu micro-report
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-
-%description plugin-ureport
-Uploads micro-report to abrt server.
-
-%description plugin-ureport -l pl.UTF-8
-Wtyczka przesyłająca raporty typu micro-report na serwer abrt.
-
-%package plugin-rhtsupport
-Summary:	libreport's RHTSupport plugin
-Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez RHTSupport
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-Obsoletes:	abrt-plugin-rhtsupport < 2.0.4
-
-%description plugin-rhtsupport
-Plugin to report bugs into RH support system.
-
-%description plugin-rhtsupport -l pl.UTF-8
-Wtyczka zgłaszająca problemy do systemu obsługi RH.
-
 %package plugin-reportuploader
 Summary:	libreport's reportuploader plugin
 Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez FTP
@@ -237,12 +222,69 @@ ticketing system.
 Wtyczka zgłaszająca błędy poprzez serwer anonimowego FTP powiązany z
 systemem biletów.
 
+%package plugin-rhtsupport
+Summary:	libreport's RHTSupport plugin
+Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez RHTSupport
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+Obsoletes:	abrt-plugin-rhtsupport < 2.0.4
+
+%description plugin-rhtsupport
+Plugin to report bugs into RH support system.
+
+%description plugin-rhtsupport -l pl.UTF-8
+Wtyczka zgłaszająca problemy do systemu obsługi RH.
+
+%package plugin-ureport
+Summary:	libreport's micro report plugin
+Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń typu micro-report
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description plugin-ureport
+Uploads micro-report to abrt server.
+
+%description plugin-ureport -l pl.UTF-8
+Wtyczka przesyłająca raporty typu micro-report na serwer abrt.
+
+%package anaconda
+Summary:	Default configuration for reporting Anaconda bugs
+Summary(pl.UTF-8):	Domyślna konfiguracja do zgłaszania błędów w Anacondzie
+Group:		Applications/File
+Requires:	%{name}-plugin-bugzilla = %{version}-%{release}
+Requires:	%{name}-plugin-reportuploader = %{version}-%{release}
+
+%description anaconda
+Default configuration for reporting Anaconda problems using Fedora
+infrastructure or uploading the gathered data over ftp/scp...
+
+%description anaconda -l pl.UTF-8
+Domyślna konfiguracja do zgłaszania problemów z Anacondą przy użyciu
+infrastruktury Fedory lub przesyłając zebrane dane po ftp/scp.
+
+%package fedora
+Summary:	Default configuration for reporting bugs via Fedora infrastructure
+Summary(pl.UTF-8):	Domyślna konfiguracja do zgłaszania błędów poprzeze infrastrukturę Fedory
+Group:		Applications/File
+Requires:	%{name} = %{version}-%{release}
+
+%description fedora
+Default configuration for reporting bugs via Fedora infrastructure
+used primarily to easy configure the reporting process for Fedora
+systems.
+
+%description fedora -l pl.UTF-8
+Domyślna konfiguracja do zgłaszania błędów poprzez infrastrukturę
+Fedory, służąca przede wszystkim do łatwej konfiguracji procesu
+zgłaszania błędów w systemach Fedora.
+
 %prep
 %setup -q
 %patch0 -p1
 
 %build
-%configure
+%configure \
+	--disable-silent-rules
 %{__make}
 
 %install
@@ -252,6 +294,8 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
+# compat layer for compatibility tool
+%{__rm} $RPM_BUILD_ROOT{%{_bindir}/report,%{_mandir}/man1/report.1}
 
 %find_lang %{name}
 
@@ -273,9 +317,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}/report_event.conf
 %config(noreplace) %{_sysconfdir}/%{name}/forbidden_words.conf
-%dir %{_sysconfdir}/%{name}/events.d
 %dir %{_sysconfdir}/%{name}/events
+%dir %{_sysconfdir}/%{name}/events.d
 %dir %{_sysconfdir}/%{name}/plugins
+%dir %{_sysconfdir}/%{name}/workflows
+%dir %{_sysconfdir}/%{name}/workflows.d
 %attr(755,root,root) %{_libdir}/libreport.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libreport.so.0
 %attr(755,root,root) %{_libdir}/libabrt_dbus.so.*.*.*
@@ -288,13 +334,16 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libabrt_dbus.so
 %dir %{_includedir}/libreport
 %{_includedir}/libreport/client.h
+%{_includedir}/libreport/config_item_info.h
 %{_includedir}/libreport/dump_dir.h
 %{_includedir}/libreport/event_config.h
+%{_includedir}/libreport/file_obj.h
 %{_includedir}/libreport/problem_data.h
 %{_includedir}/libreport/report.h
 %{_includedir}/libreport/run_event.h
 %{_includedir}/libreport/internal_abrt_dbus.h
 %{_includedir}/libreport/internal_libreport.h
+%{_includedir}/libreport/workflow.h
 %{_pkgconfigdir}/%{name}.pc
 
 %files web
@@ -325,6 +374,7 @@ rm -rf $RPM_BUILD_ROOT
 %files gtk
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/report-gtk
+%attr(755,root,root) %{_libexecdir}/abrt-screencast
 %attr(755,root,root) %{_libdir}/libreport-gtk.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libreport-gtk.so.0
 
@@ -333,6 +383,19 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libreport-gtk.so
 %{_includedir}/libreport/internal_libreport_gtk.h
 %{_pkgconfigdir}/libreport-gtk.pc
+
+%files plugin-bugzilla
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/reporter-bugzilla
+%config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla.conf
+%config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_format.conf
+%config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_format_kernel.conf
+%config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_format_libreport.conf
+%config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_formatdup.conf
+%config(noreplace) %{_sysconfdir}/libreport/events/report_Bugzilla.conf
+%config(noreplace) %{_sysconfdir}/libreport/events.d/bugzilla_event.conf
+%{_sysconfdir}/libreport/events/report_Bugzilla.xml
+%{_mandir}/man1/reporter-bugzilla.1*
 
 %files plugin-kerneloops
 %defattr(644,root,root,755)
@@ -356,19 +419,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/libreport/events/report_Mailx.xml
 %{_mandir}/man1/reporter-mailx.1*
 
-%files plugin-bugzilla
+%files plugin-reportuploader
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/reporter-bugzilla
-%config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla.conf
-%config(noreplace) %{_sysconfdir}/libreport/events/report_Bugzilla.conf
-%config(noreplace) %{_sysconfdir}/libreport/events.d/bugzilla_event.conf
-%{_sysconfdir}/libreport/events/report_Bugzilla.xml
-%{_mandir}/man1/reporter-bugzilla.1*
-
-%files plugin-ureport
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/reporter-ureport
-%{_sysconfdir}/libreport/events/report_uReport.xml
+%attr(755,root,root) %{_bindir}/reporter-upload
+%config(noreplace) %{_sysconfdir}/libreport/events.d/uploader_event.conf
+%{_sysconfdir}/libreport/events/report_Uploader.xml
+%{_sysconfdir}/libreport/workflows/workflow_Upload.xml
+%{_mandir}/man1/reporter-upload.1*
 
 %files plugin-rhtsupport
 %defattr(644,root,root,755)
@@ -378,9 +435,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/libreport/events/report_RHTSupport.xml
 %{_mandir}/man1/reporter-rhtsupport.1*
 
-%files plugin-reportuploader
+%files plugin-ureport
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/reporter-upload
-%config(noreplace) %{_sysconfdir}/libreport/events.d/uploader_event.conf
-%{_sysconfdir}/libreport/events/report_Uploader.xml
-%{_mandir}/man1/reporter-upload.1*
+%attr(755,root,root) %{_bindir}/reporter-ureport
+%{_sysconfdir}/libreport/events/report_uReport.xml
+
+%files anaconda
+%defattr(644,root,root,755)
+%{_sysconfdir}/libreport/workflows/workflow_AnacondaFedora.xml
+%{_sysconfdir}/libreport/workflows/workflow_AnacondaUpload.xml
+%config(noreplace) %{_sysconfdir}/libreport/workflows.d/anaconda_event.conf
+
+%files fedora
+%defattr(644,root,root,755)
+%{_sysconfdir}/libreport/workflows/workflow_Fedora.xml
+%config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_fedora.conf
