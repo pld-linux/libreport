@@ -1,12 +1,12 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.1.0
+Version:	2.1.3
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	761e4393411cdac13e72d832bd383dd2
+# Source0-md5:	bae83bebcb2601707ac780c53d16e7fe
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
@@ -278,6 +278,21 @@ Domyślna konfiguracja do zgłaszania błędów poprzez infrastrukturę
 Fedory, służąca przede wszystkim do łatwej konfiguracji procesu
 zgłaszania błędów w systemach Fedora.
 
+%package rhel
+Summary:	Default configuration for reporting bugs via RHEL infrastructure
+Summary(pl.UTF-8):	Domyślna konfiguracja do zgłaszania błędów poprzeze infrastrukturę RHEL
+Group:		Applications/File
+Requires:	%{name} = %{version}-%{release}
+
+%description rhel
+Default configuration for reporting bugs via RHEL infrastructure used
+primarily to easy configure the reporting process for RHEL systems.
+
+%description rhel -l pl.UTF-8
+Domyślna konfiguracja do zgłaszania błędów poprzez infrastrukturę
+RHEL, służąca przede wszystkim do łatwej konfiguracji procesu
+zgłaszania błędów w systemach RHEL.
+
 %prep
 %setup -q
 %patch0 -p1
@@ -344,6 +359,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libreport/internal_abrt_dbus.h
 %{_includedir}/libreport/internal_libreport.h
 %{_includedir}/libreport/workflow.h
+%{_includedir}/libreport/xml_parser.h
 %{_pkgconfigdir}/%{name}.pc
 
 %files web
@@ -439,6 +455,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-ureport
 %{_sysconfdir}/libreport/events/report_uReport.xml
+%{_sysconfdir}/libreport/events/report_EmergencyAnalysis.xml
+%config(noreplace) %{_sysconfdir}/libreport/events.d/emergencyanalysis_event.conf
 
 %files anaconda
 %defattr(644,root,root,755)
@@ -450,3 +468,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_sysconfdir}/libreport/workflows/workflow_Fedora.xml
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_fedora.conf
+
+%files rhel
+%defattr(644,root,root,755)
+%{_sysconfdir}/libreport/workflows/workflow_RHEL*.xml
+%config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_rhel.conf
