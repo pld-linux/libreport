@@ -2,7 +2,7 @@ Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
 Version:	2.1.3
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
@@ -87,16 +87,18 @@ Development headers for libreport-web.
 %description web-devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki libreport-web.
 
-%package python
+%package -n python-%{name}
 Summary:	Python bindings for libreport libraries
 Summary(pl.UTF-8):	Wiązania Pythona dla bibliotek libreport
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
+Provides:	%{name}-python = %{version}-%{release}
+Obsoletes:	libreport-python < 2.1.3-1
 
-%description python
+%description -n python-%{name}
 Python bindings for libreport libraries.
 
-%description python -l pl.UTF-8
+%description -n python-%{name} -l pl.UTF-8
 Wiązania Pythona dla bibliotek libreport
 
 %package cli
@@ -373,7 +375,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libreport/libreport_curl.h
 %{_pkgconfigdir}/libreport-web.pc
 
-%files python
+%files -n python-%{name}
 %defattr(644,root,root,755)
 %{py_sitedir}/report
 %{py_sitedir}/reportclient
