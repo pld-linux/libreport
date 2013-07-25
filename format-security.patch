@@ -1,14 +1,14 @@
---- libreport-2.0.16/src/plugins/ureport.c~	2012-09-25 09:40:58.000000000 +0200
-+++ libreport-2.0.16/src/plugins/ureport.c	2012-10-15 12:54:26.063200601 +0200
-@@ -383,7 +383,7 @@
+--- libreport-2.1.5/src/plugins/ureport.c.orig	2013-07-25 15:39:39.289878178 +0200
++++ libreport-2.1.5/src/plugins/ureport.c	2013-07-25 15:42:58.916536467 +0200
+@@ -476,7 +476,7 @@
          {
              log(_("This problem has already been reported."));
              if (response->message)
 -                log(response->message);
 +                log("%s", response->message);
-             log("THANKYOU");
+ 
+             ret = EXIT_STOP_EVENT_RUN;
          }
-     }
 --- libreport-2.0.16/src/gui-wizard-gtk/wizard.c~	2012-10-10 18:11:04.000000000 +0200
 +++ libreport-2.0.16/src/gui-wizard-gtk/wizard.c	2012-10-15 12:55:58.123197354 +0200
 @@ -281,7 +281,7 @@

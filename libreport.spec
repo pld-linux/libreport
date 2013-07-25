@@ -1,16 +1,20 @@
+#
+# Conditional build:
+%bcond_with	satyr	# satyr instead of btparser
+#
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.1.3
-Release:	2
+Version:	2.1.5
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	bae83bebcb2601707ac780c53d16e7fe
+# Source0-md5:	50c527d0c642dc21fa5dd3ef43b0c886
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
-BuildRequires:	btparser-devel
+%{!?with_satyr:BuildRequires:	btparser-devel}
 BuildRequires:	curl-devel
 BuildRequires:	dbus-devel
 BuildRequires:	desktop-file-utils
@@ -27,6 +31,7 @@ BuildRequires:	newt-devel
 BuildRequires:	nss-devel
 BuildRequires:	pkgconfig
 BuildRequires:	python-devel
+%{?with_satyr:BuildRequires:	satyr-devel}
 BuildRequires:	xmlrpc-c-client-devel
 BuildRequires:	xmlrpc-c-devel
 BuildRequires:	xmlto
@@ -73,11 +78,12 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libreport-web
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-web = %{version}-%{release}
-Requires:	btparser-devel
+%{!?with_satyr:Requires:	btparser-devel}
 Requires:	curl-devel
 Requires:	json-c-devel
 Requires:	libproxy-devel
 Requires:	libxml2-devel >= 2
+%{?with_satyr:Requires:	satyr-devel}
 Requires:	xmlrpc-c-client-devel
 Requires:	xmlrpc-c-devel
 
@@ -301,7 +307,8 @@ zgłaszania błędów w systemach RHEL.
 
 %build
 %configure \
-	--disable-silent-rules
+	--disable-silent-rules \
+	%{?with_satyr:--with-satyr}
 %{__make}
 
 %install
@@ -355,6 +362,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libreport/dump_dir.h
 %{_includedir}/libreport/event_config.h
 %{_includedir}/libreport/file_obj.h
+%{_includedir}/libreport/libreport_types.h
 %{_includedir}/libreport/problem_data.h
 %{_includedir}/libreport/report.h
 %{_includedir}/libreport/run_event.h
@@ -464,6 +472,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_sysconfdir}/libreport/workflows/workflow_AnacondaFedora.xml
 %{_sysconfdir}/libreport/workflows/workflow_AnacondaUpload.xml
+%config(noreplace) %{_sysconfdir}/libreport/events.d/bugzilla_anaconda_event.conf
+%config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_format_anaconda.conf
+%config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_formatdup_anaconda.conf
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/anaconda_event.conf
 
 %files fedora
