@@ -1,20 +1,15 @@
-#
-# Conditional build:
-%bcond_with	satyr	# satyr instead of btparser
-#
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.1.5
+Version:	2.1.6
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	50c527d0c642dc21fa5dd3ef43b0c886
+# Source0-md5:	3626c9c52937913a33b5d8f5acb7fc0c
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
-%{!?with_satyr:BuildRequires:	btparser-devel}
 BuildRequires:	curl-devel
 BuildRequires:	dbus-devel
 BuildRequires:	desktop-file-utils
@@ -31,7 +26,7 @@ BuildRequires:	newt-devel
 BuildRequires:	nss-devel
 BuildRequires:	pkgconfig
 BuildRequires:	python-devel
-%{?with_satyr:BuildRequires:	satyr-devel}
+BuildRequires:	satyr-devel
 BuildRequires:	xmlrpc-c-client-devel
 BuildRequires:	xmlrpc-c-devel
 BuildRequires:	xmlto
@@ -78,12 +73,11 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libreport-web
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-web = %{version}-%{release}
-%{!?with_satyr:Requires:	btparser-devel}
 Requires:	curl-devel
 Requires:	json-c-devel
 Requires:	libproxy-devel
 Requires:	libxml2-devel >= 2
-%{?with_satyr:Requires:	satyr-devel}
+Requires:	satyr-devel
 Requires:	xmlrpc-c-client-devel
 Requires:	xmlrpc-c-devel
 
@@ -307,8 +301,8 @@ zgłaszania błędów w systemach RHEL.
 
 %build
 %configure \
-	--disable-silent-rules \
-	%{?with_satyr:--with-satyr}
+	--disable-silent-rules
+
 %{__make}
 
 %install
@@ -344,12 +338,15 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/%{name}/events
 %dir %{_sysconfdir}/%{name}/events.d
 %dir %{_sysconfdir}/%{name}/plugins
-%dir %{_sysconfdir}/%{name}/workflows
 %dir %{_sysconfdir}/%{name}/workflows.d
 %attr(755,root,root) %{_libdir}/libreport.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libreport.so.0
 %attr(755,root,root) %{_libdir}/libabrt_dbus.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libabrt_dbus.so.0
+%dir %{_datadir}/libreport
+%dir %{_datadir}/libreport/events
+%dir %{_datadir}/libreport/workflows
+%{_mandir}/man5/forbidden_words.conf.5*
 %{_mandir}/man5/report_event.conf.5*
 
 %files devel
@@ -396,6 +393,7 @@ rm -rf $RPM_BUILD_ROOT
 %files newt
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/report-newt
+%{_mandir}/man1/report-newt.1*
 
 %files gtk
 %defattr(644,root,root,755)
@@ -403,6 +401,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libexecdir}/abrt-screencast
 %attr(755,root,root) %{_libdir}/libreport-gtk.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libreport-gtk.so.0
+%{_mandir}/man1/report-gtk.1*
 
 %files gtk-devel
 %defattr(644,root,root,755)
@@ -420,69 +419,92 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_formatdup.conf
 %config(noreplace) %{_sysconfdir}/libreport/events/report_Bugzilla.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/bugzilla_event.conf
-%{_sysconfdir}/libreport/events/report_Bugzilla.xml
+%{_datadir}/libreport/events/report_Bugzilla.xml
 %{_mandir}/man1/reporter-bugzilla.1*
+%{_mandir}/man5/bugzilla.conf.5*
+%{_mandir}/man5/bugzilla_event.conf.5*
+%{_mandir}/man5/bugzilla_format.conf.5*
+%{_mandir}/man5/bugzilla_format_kernel.conf.5*
+%{_mandir}/man5/bugzilla_format_libreport.conf.5*
+%{_mandir}/man5/bugzilla_formatdup.conf.5*
+%{_mandir}/man5/report_Bugzilla.conf.5*
 
 %files plugin-kerneloops
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-kerneloops
-%{_sysconfdir}/libreport/events/report_Kerneloops.xml
+%{_datadir}/libreport/events/report_Kerneloops.xml
 %{_mandir}/man1/reporter-kerneloops.1*
 
 %files plugin-logger
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-print
 %{_sysconfdir}/libreport/events/report_Logger.conf
-%{_sysconfdir}/libreport/events/report_Logger.xml
+%{_datadir}/libreport/events/report_Logger.xml
 %config(noreplace) %{_sysconfdir}/libreport/events.d/print_event.conf
 %{_mandir}/man1/reporter-print.1*
+%{_mandir}/man5/print_event.conf.5*
+%{_mandir}/man5/report_Logger.conf.5*
 
 %files plugin-mailx
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-mailx
 %config(noreplace) %{_sysconfdir}/libreport/plugins/mailx.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/mailx_event.conf
-%{_sysconfdir}/libreport/events/report_Mailx.xml
+%{_datadir}/libreport/events/report_Mailx.xml
 %{_mandir}/man1/reporter-mailx.1*
+%{_mandir}/man5/mailx.conf.5*
+%{_mandir}/man5/mailx_event.conf.5*
 
 %files plugin-reportuploader
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-upload
 %config(noreplace) %{_sysconfdir}/libreport/events.d/uploader_event.conf
-%{_sysconfdir}/libreport/events/report_Uploader.xml
-%{_sysconfdir}/libreport/workflows/workflow_Upload.xml
+%{_datadir}/libreport/events/report_Uploader.xml
+%{_datadir}/libreport/workflows/workflow_Upload.xml
 %{_mandir}/man1/reporter-upload.1*
+%{_mandir}/man5/uploader_event.conf.5*
 
 %files plugin-rhtsupport
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-rhtsupport
 %config(noreplace) %{_sysconfdir}/libreport/plugins/rhtsupport.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/rhtsupport_event.conf
-%{_sysconfdir}/libreport/events/report_RHTSupport.xml
+%{_datadir}/libreport/events/report_RHTSupport.xml
 %{_mandir}/man1/reporter-rhtsupport.1*
+%{_mandir}/man5/rhtsupport.conf.5*
+%{_mandir}/man5/rhtsupport_event.conf.5*
 
 %files plugin-ureport
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-ureport
-%{_sysconfdir}/libreport/events/report_uReport.xml
-%{_sysconfdir}/libreport/events/report_EmergencyAnalysis.xml
 %config(noreplace) %{_sysconfdir}/libreport/events.d/emergencyanalysis_event.conf
+%{_datadir}/libreport/events/report_uReport.xml
+%{_datadir}/libreport/events/report_EmergencyAnalysis.xml
+%{_mandir}/man1/reporter-ureport.1*
+%{_mandir}/man5/emergencyanalysis_event.conf.5*
 
 %files anaconda
 %defattr(644,root,root,755)
-%{_sysconfdir}/libreport/workflows/workflow_AnacondaFedora.xml
-%{_sysconfdir}/libreport/workflows/workflow_AnacondaUpload.xml
 %config(noreplace) %{_sysconfdir}/libreport/events.d/bugzilla_anaconda_event.conf
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_format_anaconda.conf
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_formatdup_anaconda.conf
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/anaconda_event.conf
+%{_datadir}/libreport/workflows/workflow_AnacondaFedora.xml
+%{_datadir}/libreport/workflows/workflow_AnacondaRHEL.xml
+%{_datadir}/libreport/workflows/workflow_AnacondaUpload.xml
+%{_mandir}/man5/anaconda_event.conf.5*
+%{_mandir}/man5/bugzilla_anaconda_event.conf.5*
+%{_mandir}/man5/bugzilla_format_anaconda.conf.5*
+%{_mandir}/man5/bugzilla_formatdup_anaconda.conf.5*
 
 %files fedora
 %defattr(644,root,root,755)
-%{_sysconfdir}/libreport/workflows/workflow_Fedora.xml
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_fedora.conf
+%{_datadir}/libreport/workflows/workflow_Fedora*.xml
+%{_mandir}/man5/report_fedora.conf.5*
 
 %files rhel
 %defattr(644,root,root,755)
-%{_sysconfdir}/libreport/workflows/workflow_RHEL*.xml
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_rhel.conf
+%{_datadir}/libreport/workflows/workflow_RHEL*.xml
+%{_mandir}/man5/report_rhel.conf.5*
