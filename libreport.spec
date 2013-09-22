@@ -1,12 +1,12 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.1.6
+Version:	2.1.7
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	3626c9c52937913a33b5d8f5acb7fc0c
+# Source0-md5:	0d0e0ca3556afa3dcfe83e91af8ab722
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
@@ -398,7 +398,6 @@ rm -rf $RPM_BUILD_ROOT
 %files gtk
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/report-gtk
-%attr(755,root,root) %{_libexecdir}/abrt-screencast
 %attr(755,root,root) %{_libdir}/libreport-gtk.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libreport-gtk.so.0
 %{_mandir}/man1/report-gtk.1*
