@@ -1,12 +1,12 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.1.7
+Version:	2.1.9
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	0d0e0ca3556afa3dcfe83e91af8ab722
+# Source0-md5:	07ccab47869d6f9cfd851b4fba8ba015
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
@@ -333,8 +333,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README
 %dir %{_sysconfdir}/%{name}
-%config(noreplace) %{_sysconfdir}/%{name}/report_event.conf
-%config(noreplace) %{_sysconfdir}/%{name}/forbidden_words.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/report_event.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/forbidden_words.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/ignored_words.conf
 %dir %{_sysconfdir}/%{name}/events
 %dir %{_sysconfdir}/%{name}/events.d
 %dir %{_sysconfdir}/%{name}/plugins
