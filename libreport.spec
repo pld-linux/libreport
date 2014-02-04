@@ -1,15 +1,21 @@
+#
+# Conditional build:
+%bcond_without	tests	# "make check"
+#
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.1.9
-Release:	4
+Version:	2.1.12
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	07ccab47869d6f9cfd851b4fba8ba015
+# Source0-md5:	3c563d8f9d5564a825f94f17af9c5508
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
+%{?with_tests:BuildRequires:	augeas}
+BuildRequires:	augeas-devel
 BuildRequires:	curl-devel
 BuildRequires:	dbus-devel
 BuildRequires:	desktop-file-utils
@@ -27,6 +33,8 @@ BuildRequires:	nss-devel
 BuildRequires:	pkgconfig
 BuildRequires:	python-devel
 BuildRequires:	satyr-devel
+# libsystemd-journal
+BuildRequires:	systemd-devel
 BuildRequires:	xmlrpc-c-client-devel
 BuildRequires:	xmlrpc-c-devel
 BuildRequires:	xmlto
@@ -301,9 +309,14 @@ zgłaszania błędów w systemach RHEL.
 
 %build
 %configure \
+	AUGPARSE=/usr/bin/augparse \
 	--disable-silent-rules
 
 %{__make}
+
+%if %{with tests}
+%{__make} check
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -344,7 +357,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libreport.so.0
 %attr(755,root,root) %{_libdir}/libabrt_dbus.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libabrt_dbus.so.0
+%{_datadir}/augeas/lenses/libreport.aug
 %dir %{_datadir}/libreport
+%dir %{_datadir}/libreport/conf.d
+%dir %{_datadir}/libreport/conf.d/plugins
 %dir %{_datadir}/libreport/events
 %dir %{_datadir}/libreport/workflows
 %{_mandir}/man5/forbidden_words.conf.5*
@@ -419,6 +435,8 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_formatdup.conf
 %config(noreplace) %{_sysconfdir}/libreport/events/report_Bugzilla.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/bugzilla_event.conf
+%{_datadir}/dbus-1/interfaces/com.redhat.problems.configuration.bugzilla.xml
+%{_datadir}/libreport/conf.d/plugins/bugzilla.conf
 %{_datadir}/libreport/events/report_Bugzilla.xml
 %{_mandir}/man1/reporter-bugzilla.1*
 %{_mandir}/man5/bugzilla.conf.5*
@@ -450,6 +468,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/reporter-mailx
 %config(noreplace) %{_sysconfdir}/libreport/plugins/mailx.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/mailx_event.conf
+%{_datadir}/dbus-1/interfaces/com.redhat.problems.configuration.mailx.xml
+%{_datadir}/libreport/conf.d/plugins/mailx.conf
 %{_datadir}/libreport/events/report_Mailx.xml
 %{_mandir}/man1/reporter-mailx.1*
 %{_mandir}/man5/mailx.conf.5*
@@ -469,6 +489,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/reporter-rhtsupport
 %config(noreplace) %{_sysconfdir}/libreport/plugins/rhtsupport.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/rhtsupport_event.conf
+%{_datadir}/dbus-1/interfaces/com.redhat.problems.configuration.rhtsupport.xml
+%{_datadir}/libreport/conf.d/plugins/rhtsupport.conf
 %{_datadir}/libreport/events/report_RHTSupport.xml
 %{_mandir}/man1/reporter-rhtsupport.1*
 %{_mandir}/man5/rhtsupport.conf.5*
@@ -478,10 +500,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-ureport
 %config(noreplace) %{_sysconfdir}/libreport/events.d/emergencyanalysis_event.conf
+%config(noreplace) %{_sysconfdir}/libreport/plugins/ureport.conf
+%{_datadir}/dbus-1/interfaces/com.redhat.problems.configuration.ureport.xml
+%{_datadir}/libreport/conf.d/plugins/ureport.conf
 %{_datadir}/libreport/events/report_uReport.xml
 %{_datadir}/libreport/events/report_EmergencyAnalysis.xml
 %{_mandir}/man1/reporter-ureport.1*
 %{_mandir}/man5/emergencyanalysis_event.conf.5*
+%{_mandir}/man5/ureport.conf.5*
 
 %files anaconda
 %defattr(644,root,root,755)
@@ -491,6 +517,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/anaconda_event.conf
 %{_datadir}/libreport/workflows/workflow_AnacondaFedora.xml
 %{_datadir}/libreport/workflows/workflow_AnacondaRHEL.xml
+%{_datadir}/libreport/workflows/workflow_AnacondaRHELBugzilla.xml
 %{_datadir}/libreport/workflows/workflow_AnacondaUpload.xml
 %{_mandir}/man5/anaconda_event.conf.5*
 %{_mandir}/man5/bugzilla_anaconda_event.conf.5*
@@ -506,5 +533,7 @@ rm -rf $RPM_BUILD_ROOT
 %files rhel
 %defattr(644,root,root,755)
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_rhel.conf
+%config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_rhel_bugzilla.conf
 %{_datadir}/libreport/workflows/workflow_RHEL*.xml
 %{_mandir}/man5/report_rhel.conf.5*
+%{_mandir}/man5/report_rhel_bugzilla.conf.5*
