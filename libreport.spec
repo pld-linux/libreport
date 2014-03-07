@@ -1,3 +1,4 @@
+# TODO: teach build system to use python3.2+ __pycache__
 #
 # Conditional build:
 %bcond_without	tests	# "make check"
@@ -5,12 +6,12 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.1.12
+Version:	2.2.0
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	3c563d8f9d5564a825f94f17af9c5508
+# Source0-md5:	09af2b13375ed2d6288b86ce6de8b182
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
@@ -31,7 +32,9 @@ BuildRequires:	libxml2-devel >= 2
 BuildRequires:	newt-devel
 BuildRequires:	nss-devel
 BuildRequires:	pkgconfig
-BuildRequires:	python-devel
+BuildRequires:	python-devel >= 2
+BuildRequires:	python3-devel >= 3
+BuildRequires:	rpmbuild(macros) >= 1.612
 BuildRequires:	satyr-devel
 # libsystemd-journal
 BuildRequires:	systemd-devel
@@ -96,18 +99,30 @@ Development headers for libreport-web.
 Pliki nagłówkowe biblioteki libreport-web.
 
 %package -n python-%{name}
-Summary:	Python bindings for libreport libraries
-Summary(pl.UTF-8):	Wiązania Pythona dla bibliotek libreport
+Summary:	Python 2 bindings for libreport libraries
+Summary(pl.UTF-8):	Wiązania Pythona 2 do bibliotek libreport
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 Provides:	%{name}-python = %{version}-%{release}
 Obsoletes:	libreport-python < 2.1.3-1
 
 %description -n python-%{name}
-Python bindings for libreport libraries.
+Python 2 bindings for libreport libraries.
 
 %description -n python-%{name} -l pl.UTF-8
-Wiązania Pythona dla bibliotek libreport
+Wiązania Pythona 2 do bibliotek libreport
+
+%package -n python3-%{name}
+Summary:	Python 3 bindings for libreport libraries
+Summary(pl.UTF-8):	Wiązania Pythona 3 do bibliotek libreport
+Group:		Libraries/Python
+Requires:	%{name} = %{version}-%{release}
+
+%description -n python3-%{name}
+Python 3 bindings for libreport libraries.
+
+%description -n python3-%{name} -l pl.UTF-8
+Wiązania Pythona 3 do bibliotek libreport
 
 %package cli
 Summary:	libreport's command line interface
@@ -328,6 +343,10 @@ rm -rf $RPM_BUILD_ROOT
 # compat layer for compatibility tool
 %{__rm} $RPM_BUILD_ROOT{%{_bindir}/report,%{_mandir}/man1/report.1}
 
+%py_postclean
+%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/report*/*.la
+%{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/report/*.la
+
 %find_lang %{name}
 
 %clean
@@ -399,8 +418,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n python-%{name}
 %defattr(644,root,root,755)
-%{py_sitedir}/report
-%{py_sitedir}/reportclient
+%dir %{py_sitedir}/report
+%attr(755,root,root) %{py_sitedir}/report/_pyreport.so
+%{py_sitedir}/report/*.py[co]
+%dir %{py_sitedir}/report/io
+%{py_sitedir}/report/io/*.py[co]
+%dir %{py_sitedir}/reportclient
+%attr(755,root,root) %{py_sitedir}/reportclient/_reportclient.so
+%{py_sitedir}/reportclient/*.py[co]
+
+%files -n python3-%{name}
+%defattr(644,root,root,755)
+%dir %{py3_sitedir}/report
+%attr(755,root,root) %{py3_sitedir}/report/_py3report.so
+%{py3_sitedir}/report/*.py*
+%dir %{py3_sitedir}/report/io
+%{py3_sitedir}/report/io/*.py*
 
 %files cli
 %defattr(644,root,root,755)
@@ -438,6 +471,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/dbus-1/interfaces/com.redhat.problems.configuration.bugzilla.xml
 %{_datadir}/libreport/conf.d/plugins/bugzilla.conf
 %{_datadir}/libreport/events/report_Bugzilla.xml
+%{_datadir}/libreport/events/watch_Bugzilla.xml
 %{_mandir}/man1/reporter-bugzilla.1*
 %{_mandir}/man5/bugzilla.conf.5*
 %{_mandir}/man5/bugzilla_event.conf.5*
