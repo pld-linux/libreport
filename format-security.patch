@@ -9,9 +9,9 @@
  
              ret = EXIT_STOP_EVENT_RUN;
          }
---- libreport-2.0.16/src/gui-wizard-gtk/wizard.c~	2012-10-10 18:11:04.000000000 +0200
-+++ libreport-2.0.16/src/gui-wizard-gtk/wizard.c	2012-10-15 12:55:58.123197354 +0200
-@@ -281,7 +281,7 @@
+--- libreport-2.2.2/src/gui-wizard-gtk/wizard.c.orig	2014-04-20 22:07:04.000000000 +0200
++++ libreport-2.2.2/src/gui-wizard-gtk/wizard.c	2014-06-14 17:08:36.638269706 +0200
+@@ -320,7 +320,7 @@
          GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
          GTK_MESSAGE_WARNING,
          GTK_BUTTONS_CLOSE,
@@ -20,7 +20,16 @@
  
      gtk_window_set_transient_for(GTK_WINDOW(wrong_settings), GTK_WINDOW(g_wnd_assistant));
      gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(wrong_settings),
-@@ -2753,7 +2753,7 @@
+@@ -1935,7 +1935,7 @@
+         GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+         GTK_MESSAGE_WARNING,
+         GTK_BUTTONS_YES_NO,
+-        message);
++        "%s", message);
+ 
+     gtk_window_set_transient_for(GTK_WINDOW(old_private_group), GTK_WINDOW(g_wnd_assistant));
+     gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(old_private_group),
+@@ -3118,7 +3118,7 @@
                  GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                  GTK_MESSAGE_WARNING,
                  GTK_BUTTONS_CLOSE,

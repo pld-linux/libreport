@@ -6,12 +6,12 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.2.0
+Version:	2.2.2
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	09af2b13375ed2d6288b86ce6de8b182
+# Source0-md5:	0183ac40c8d6e701087a33bcc1b95a6d
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
@@ -383,6 +383,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/libreport/events
 %dir %{_datadir}/libreport/workflows
 %{_mandir}/man5/forbidden_words.conf.5*
+%{_mandir}/man5/ignored_words.conf.5*
 %{_mandir}/man5/report_event.conf.5*
 
 %files devel
@@ -513,6 +514,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-upload
 %config(noreplace) %{_sysconfdir}/libreport/events.d/uploader_event.conf
+%config(noreplace) %{_sysconfdir}/libreport/plugins/upload.conf
+%{_datadir}/libreport/conf.d/plugins/upload.conf
 %{_datadir}/libreport/events/report_Uploader.xml
 %{_datadir}/libreport/workflows/workflow_Upload.xml
 %{_mandir}/man1/reporter-upload.1*
