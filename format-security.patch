@@ -11,15 +11,6 @@
          }
 --- libreport-2.2.2/src/gui-wizard-gtk/wizard.c.orig	2014-04-20 22:07:04.000000000 +0200
 +++ libreport-2.2.2/src/gui-wizard-gtk/wizard.c	2014-06-14 17:08:36.638269706 +0200
-@@ -320,7 +320,7 @@
-         GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-         GTK_MESSAGE_WARNING,
-         GTK_BUTTONS_CLOSE,
--        message);
-+        "%s", message);
- 
-     gtk_window_set_transient_for(GTK_WINDOW(wrong_settings), GTK_WINDOW(g_wnd_assistant));
-     gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(wrong_settings),
 @@ -1935,7 +1935,7 @@
          GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
          GTK_MESSAGE_WARNING,

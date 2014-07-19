@@ -6,17 +6,19 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.2.2
+Version:	2.2.3
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	0183ac40c8d6e701087a33bcc1b95a6d
+# Source0-md5:	b92e2fc2cee52ae0f5fac633e5ae9cd3
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
 %{?with_tests:BuildRequires:	augeas}
 BuildRequires:	augeas-devel
+BuildRequires:	autoconf >= 2.50
+BuildRequires:	automake
 BuildRequires:	curl-devel
 BuildRequires:	dbus-devel
 BuildRequires:	desktop-file-utils
@@ -27,7 +29,7 @@ BuildRequires:	intltool >= 0.35.0
 BuildRequires:	json-c-devel
 BuildRequires:	libproxy-devel
 BuildRequires:	libtar-devel
-BuildRequires:	libtool
+BuildRequires:	libtool >= 1:1.4.2
 BuildRequires:	libxml2-devel >= 2
 BuildRequires:	newt-devel
 BuildRequires:	nss-devel
@@ -323,6 +325,11 @@ zgłaszania błędów w systemach RHEL.
 %patch0 -p1
 
 %build
+%{__libtoolize}
+%{__aclocal} -I m4
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure \
 	AUGPARSE=/usr/bin/augparse \
 	--disable-silent-rules
@@ -404,7 +411,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libreport/internal_libreport.h
 %{_includedir}/libreport/workflow.h
 %{_includedir}/libreport/xml_parser.h
-%{_pkgconfigdir}/%{name}.pc
+%{_pkgconfigdir}/libreport.pc
 
 %files web
 %defattr(644,root,root,755)
