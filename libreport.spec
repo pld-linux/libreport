@@ -6,12 +6,12 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.2.3
+Version:	2.3.0
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	b92e2fc2cee52ae0f5fac633e5ae9cd3
+# Source0-md5:	ec15ee90d241e5b74a2ab2d66fec3bc3
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
@@ -354,6 +354,21 @@ rm -rf $RPM_BUILD_ROOT
 %{__rm} $RPM_BUILD_ROOT%{py_sitedir}/report*/*.la
 %{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/report/*.la
 
+# just a copy of af,hr,ms (empty in turn)
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/af_ZA
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/hr_HR
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/ms_MY
+# empty version of cs,es,eu,fa,it,ja,ru,ta,uk
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/cs_CZ
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/es_ES
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/eu_ES
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/fa_IR
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/it_IT
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/ja_JP
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/ru_RU
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/ta_IN
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/uk_UA
+
 %find_lang %{name}
 
 %clean
@@ -409,6 +424,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libreport/run_event.h
 %{_includedir}/libreport/internal_abrt_dbus.h
 %{_includedir}/libreport/internal_libreport.h
+%{_includedir}/libreport/ureport.h
 %{_includedir}/libreport/workflow.h
 %{_includedir}/libreport/xml_parser.h
 %{_pkgconfigdir}/libreport.pc
@@ -464,6 +480,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libreport-gtk.so
 %{_includedir}/libreport/internal_libreport_gtk.h
+%{_includedir}/libreport/problem_details_dialog.h
+%{_includedir}/libreport/problem_details_widget.h
 %{_pkgconfigdir}/libreport-gtk.pc
 
 %files plugin-bugzilla
@@ -471,8 +489,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/reporter-bugzilla
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla.conf
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_format.conf
+%config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_format_analyzer_libreport.conf
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_format_kernel.conf
-%config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_format_libreport.conf
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_formatdup.conf
 %config(noreplace) %{_sysconfdir}/libreport/events/report_Bugzilla.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/bugzilla_event.conf
@@ -484,8 +502,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man5/bugzilla.conf.5*
 %{_mandir}/man5/bugzilla_event.conf.5*
 %{_mandir}/man5/bugzilla_format.conf.5*
+%{_mandir}/man5/bugzilla_format_analyzer_libreport.conf.5*
 %{_mandir}/man5/bugzilla_format_kernel.conf.5*
-%{_mandir}/man5/bugzilla_format_libreport.conf.5*
 %{_mandir}/man5/bugzilla_formatdup.conf.5*
 %{_mandir}/man5/report_Bugzilla.conf.5*
 
@@ -498,34 +516,45 @@ rm -rf $RPM_BUILD_ROOT
 %files plugin-logger
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-print
-%{_sysconfdir}/libreport/events/report_Logger.conf
-%{_datadir}/libreport/events/report_Logger.xml
+%config(noreplace) %{_sysconfdir}/libreport/events/report_Logger.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/print_event.conf
+%config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_logger.conf
+%{_datadir}/libreport/events/report_Logger.xml
+%{_datadir}/libreport/workflows/workflow_Logger.xml
+%{_datadir}/libreport/workflows/workflow_LoggerCCpp.xml
 %{_mandir}/man1/reporter-print.1*
 %{_mandir}/man5/print_event.conf.5*
 %{_mandir}/man5/report_Logger.conf.5*
+%{_mandir}/man5/report_logger.conf.5*
 
 %files plugin-mailx
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-mailx
 %config(noreplace) %{_sysconfdir}/libreport/plugins/mailx.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/mailx_event.conf
+%config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_mailx.conf
 %{_datadir}/dbus-1/interfaces/com.redhat.problems.configuration.mailx.xml
 %{_datadir}/libreport/conf.d/plugins/mailx.conf
 %{_datadir}/libreport/events/report_Mailx.xml
+%{_datadir}/libreport/workflows/workflow_Mailx.xml
+%{_datadir}/libreport/workflows/workflow_MailxCCpp.xml
 %{_mandir}/man1/reporter-mailx.1*
 %{_mandir}/man5/mailx.conf.5*
 %{_mandir}/man5/mailx_event.conf.5*
+%{_mandir}/man5/report_mailx.conf.5*
 
 %files plugin-reportuploader
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-upload
-%config(noreplace) %{_sysconfdir}/libreport/events.d/uploader_event.conf
 %config(noreplace) %{_sysconfdir}/libreport/plugins/upload.conf
+%config(noreplace) %{_sysconfdir}/libreport/events.d/uploader_event.conf
+%config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_uploader.conf
 %{_datadir}/libreport/conf.d/plugins/upload.conf
 %{_datadir}/libreport/events/report_Uploader.xml
 %{_datadir}/libreport/workflows/workflow_Upload.xml
+%{_datadir}/libreport/workflows/workflow_UploadCCpp.xml
 %{_mandir}/man1/reporter-upload.1*
+%{_mandir}/man5/report_uploader.conf.5*
 %{_mandir}/man5/uploader_event.conf.5*
 
 %files plugin-rhtsupport
