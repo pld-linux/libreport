@@ -22,7 +22,7 @@ BuildRequires:	automake
 BuildRequires:	curl-devel
 BuildRequires:	dbus-devel
 BuildRequires:	desktop-file-utils
-BuildRequires:	gettext-devel >= 0.17
+BuildRequires:	gettext-tools >= 0.17
 BuildRequires:	glib2-devel >= 1:2.21
 BuildRequires:	gtk+3-devel >= 3.0
 BuildRequires:	intltool >= 0.35.0
