@@ -6,12 +6,12 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.3.0
-Release:	3
+Version:	2.4.0
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	ec15ee90d241e5b74a2ab2d66fec3bc3
+# Source0-md5:	b147d7e6d51b8258b71fcb0e3d558648
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
@@ -180,7 +180,7 @@ Pliki nagłówkowe biblioteki libreport-gtk.
 Summary:	libreport's bugzilla plugin
 Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez Bugzillę
 Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-web = %{version}-%{release}
 Obsoletes:	abrt-plugin-bugzilla < 2.0.4
 
 %description plugin-bugzilla
@@ -193,7 +193,7 @@ Wtyczka zgłaszająca problemy do systemu Bugzilla.
 Summary:	libreport's kerneloops reporter plugin
 Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń awarii jądra (kerneloops)
 Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-web = %{version}-%{release}
 Requires:	curl
 
 %description plugin-kerneloops
@@ -234,11 +234,23 @@ specified email address.
 Prosta wtyczka zgłaszająca problem, wysyłająca raport na określony
 adres e-mail przy użyciu programu mailx.
 
+%package plugin-mantisbt
+Summary:	libreport's mantisbt plugin
+Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez mantisbt
+Group:		Libraries
+Requires:	%{name}-web = %{version}-%{release}
+
+%description plugin-mantisbt
+Plugin to report bugs into the mantisbt.
+
+%description plugin-mantisbt -l pl.UTF-8
+Wtyczka zgłaszająca problemy do systemu mantisbt.
+
 %package plugin-reportuploader
 Summary:	libreport's reportuploader plugin
 Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez FTP
 Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-web = %{version}-%{release}
 Obsoletes:	abrt-plugin-reportuploader < 2.0.4
 
 %description plugin-reportuploader
@@ -253,7 +265,7 @@ systemem biletów.
 Summary:	libreport's RHTSupport plugin
 Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez RHTSupport
 Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-web = %{version}-%{release}
 Obsoletes:	abrt-plugin-rhtsupport < 2.0.4
 
 %description plugin-rhtsupport
@@ -266,7 +278,7 @@ Wtyczka zgłaszająca problemy do systemu obsługi RH.
 Summary:	libreport's micro report plugin
 Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń typu micro-report
 Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-web = %{version}-%{release}
 
 %description plugin-ureport
 Uploads micro-report to abrt server.
@@ -289,9 +301,26 @@ infrastructure or uploading the gathered data over ftp/scp...
 Domyślna konfiguracja do zgłaszania problemów z Anacondą przy użyciu
 infrastruktury Fedory lub przesyłając zebrane dane po ftp/scp.
 
+%package centos
+Summary:	Default configuration for reporting bugs via CentOS infrastructure
+Summary(pl.UTF-8):	Domyślna konfiguracja do zgłaszania błędów poprzez infrastrukturę CentOS
+Group:		Applications/File
+Requires:	%{name}-web = %{version}-%{release}
+Requires:	%{name}-plugin-mantisbt = %{version}-%{release}
+
+%description centos
+Default configuration for reporting bugs via CentOS infrastructure
+used primarily to easy configure the reporting process for CentOS
+systems.
+
+%description centos -l pl.UTF-8
+Domyślna konfiguracja do zgłaszania błędów poprzez infrastrukturę
+CentOS, służąca przede wszystkim do łatwej konfiguracji procesu
+zgłaszania błędów w systemach CentOS.
+
 %package fedora
 Summary:	Default configuration for reporting bugs via Fedora infrastructure
-Summary(pl.UTF-8):	Domyślna konfiguracja do zgłaszania błędów poprzeze infrastrukturę Fedory
+Summary(pl.UTF-8):	Domyślna konfiguracja do zgłaszania błędów poprzez infrastrukturę Fedory
 Group:		Applications/File
 Requires:	%{name} = %{version}-%{release}
 
@@ -307,7 +336,7 @@ zgłaszania błędów w systemach Fedora.
 
 %package rhel
 Summary:	Default configuration for reporting bugs via RHEL infrastructure
-Summary(pl.UTF-8):	Domyślna konfiguracja do zgłaszania błędów poprzeze infrastrukturę RHEL
+Summary(pl.UTF-8):	Domyślna konfiguracja do zgłaszania błędów poprzez infrastrukturę RHEL
 Group:		Applications/File
 Requires:	%{name} = %{version}-%{release}
 
@@ -354,20 +383,8 @@ rm -rf $RPM_BUILD_ROOT
 %{__rm} $RPM_BUILD_ROOT%{py_sitedir}/report*/*.la
 %{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/report/*.la
 
-# just a copy of af,hr,ms (empty in turn)
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/af_ZA
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/hr_HR
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/ms_MY
-# empty version of cs,es,eu,fa,it,ja,ru,ta,uk
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/cs_CZ
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/es_ES
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/eu_ES
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/fa_IR
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/it_IT
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/ja_JP
+# empty version ru
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/ru_RU
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/ta_IN
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/uk_UA
 
 %find_lang %{name}
 
@@ -390,6 +407,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/report_event.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/forbidden_words.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/ignored_words.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/libreport.conf
 %dir %{_sysconfdir}/%{name}/events
 %dir %{_sysconfdir}/%{name}/events.d
 %dir %{_sysconfdir}/%{name}/plugins
@@ -401,11 +419,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/augeas/lenses/libreport.aug
 %dir %{_datadir}/libreport
 %dir %{_datadir}/libreport/conf.d
+%{_datadir}/libreport/conf.d/libreport.conf
 %dir %{_datadir}/libreport/conf.d/plugins
 %dir %{_datadir}/libreport/events
 %dir %{_datadir}/libreport/workflows
 %{_mandir}/man5/forbidden_words.conf.5*
 %{_mandir}/man5/ignored_words.conf.5*
+%{_mandir}/man5/libreport.conf.5*
 %{_mandir}/man5/report_event.conf.5*
 
 %files devel
@@ -418,12 +438,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libreport/dump_dir.h
 %{_includedir}/libreport/event_config.h
 %{_includedir}/libreport/file_obj.h
+%{_includedir}/libreport/global_configuration.h
 %{_includedir}/libreport/libreport_types.h
 %{_includedir}/libreport/problem_data.h
 %{_includedir}/libreport/report.h
 %{_includedir}/libreport/run_event.h
 %{_includedir}/libreport/internal_abrt_dbus.h
 %{_includedir}/libreport/internal_libreport.h
+%{_includedir}/libreport/problem_report.h
+%{_includedir}/libreport/problem_utils.h
+%{_includedir}/libreport/reporters.h
 %{_includedir}/libreport/ureport.h
 %{_includedir}/libreport/workflow.h
 %{_includedir}/libreport/xml_parser.h
@@ -543,6 +567,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man5/mailx_event.conf.5*
 %{_mandir}/man5/report_mailx.conf.5*
 
+%files plugin-mantisbt
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/reporter-mantisbt
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/libreport/plugins/mantisbt.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/libreport/plugins/mantisbt_format.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/libreport/plugins/mantisbt_formatdup.conf
+%{_datadir}/libreport/conf.d/plugins/mantisbt.conf
+
 %files plugin-reportuploader
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-upload
@@ -596,6 +628,21 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man5/bugzilla_anaconda_event.conf.5*
 %{_mandir}/man5/bugzilla_format_anaconda.conf.5*
 %{_mandir}/man5/bugzilla_formatdup_anaconda.conf.5*
+
+%files centos
+%defattr(644,root,root,755)
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/libreport/events/report_CentOSBugTracker.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/libreport/events.d/centos_report_event.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/libreport/workflows.d/report_centos.conf
+%{_datadir}/libreport/events/report_CentOSBugTracker.xml
+%{_datadir}/libreport/workflows/workflow_CentOSCCpp.xml
+%{_datadir}/libreport/workflows/workflow_CentOSJava.xml
+%{_datadir}/libreport/workflows/workflow_CentOSKerneloops.xml
+%{_datadir}/libreport/workflows/workflow_CentOSLibreport.xml
+%{_datadir}/libreport/workflows/workflow_CentOSPython.xml
+%{_datadir}/libreport/workflows/workflow_CentOSPython3.xml
+%{_datadir}/libreport/workflows/workflow_CentOSVmcore.xml
+%{_datadir}/libreport/workflows/workflow_CentOSXorg.xml
 
 %files fedora
 %defattr(644,root,root,755)
