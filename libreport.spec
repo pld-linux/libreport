@@ -6,12 +6,12 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.4.0
+Version:	2.5.0
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	b147d7e6d51b8258b71fcb0e3d558648
+# Source0-md5:	c3b8d39d0b224cbda73eb6ffc46291dd
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
@@ -381,7 +381,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %py_postclean
 %{__rm} $RPM_BUILD_ROOT%{py_sitedir}/report*/*.la
-%{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/report/*.la
+%{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/report*/*.la
 
 # empty version ru
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/ru_RU
@@ -482,6 +482,9 @@ rm -rf $RPM_BUILD_ROOT
 %{py3_sitedir}/report/*.py*
 %dir %{py3_sitedir}/report/io
 %{py3_sitedir}/report/io/*.py*
+%dir %{py3_sitedir}/reportclient
+%attr(755,root,root) %{py3_sitedir}/reportclient/_reportclient3.so
+%{py3_sitedir}/reportclient/*.py*
 
 %files cli
 %defattr(644,root,root,755)
@@ -574,6 +577,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/libreport/plugins/mantisbt_format.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/libreport/plugins/mantisbt_formatdup.conf
 %{_datadir}/libreport/conf.d/plugins/mantisbt.conf
+%{_mandir}/man1/reporter-mantisbt.1*
+%{_mandir}/man5/mantisbt.conf.5*
+%{_mandir}/man5/mantisbt_format.conf.5*
+%{_mandir}/man5/mantisbt_formatdup.conf.5*
 
 %files plugin-reportuploader
 %defattr(644,root,root,755)
@@ -643,6 +650,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/libreport/workflows/workflow_CentOSPython3.xml
 %{_datadir}/libreport/workflows/workflow_CentOSVmcore.xml
 %{_datadir}/libreport/workflows/workflow_CentOSXorg.xml
+%{_mandir}/man5/centos_report_event.conf.5*
+%{_mandir}/man5/report_CentOSBugTracker.conf.5*
+%{_mandir}/man5/report_centos.conf.5*
 
 %files fedora
 %defattr(644,root,root,755)
