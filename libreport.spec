@@ -43,6 +43,7 @@ BuildRequires:	systemd-devel
 BuildRequires:	xmlrpc-c-client-devel
 BuildRequires:	xmlrpc-c-devel
 BuildRequires:	xmlto
+BuildRequires:	xz-devel
 Requires:	glib2 >= 1:2.21
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
