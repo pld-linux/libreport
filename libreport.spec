@@ -6,12 +6,12 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.5.0
+Version:	2.6.0
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	c3b8d39d0b224cbda73eb6ffc46291dd
+# Source0-md5:	764ef9745518391abe8349f979d6ce1d
 Patch0:		format-security.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
@@ -576,12 +576,16 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/reporter-mantisbt
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/libreport/plugins/mantisbt.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/libreport/plugins/mantisbt_format.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/libreport/plugins/mantisbt_format_analyzer_libreport.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/libreport/plugins/mantisbt_formatdup.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/libreport/plugins/mantisbt_formatdup_analyzer_libreport.conf
 %{_datadir}/libreport/conf.d/plugins/mantisbt.conf
 %{_mandir}/man1/reporter-mantisbt.1*
 %{_mandir}/man5/mantisbt.conf.5*
 %{_mandir}/man5/mantisbt_format.conf.5*
+%{_mandir}/man5/mantisbt_format_analyzer_libreport.conf.5*
 %{_mandir}/man5/mantisbt_formatdup.conf.5*
+%{_mandir}/man5/mantisbt_formatdup_analyzer_libreport.conf.5*
 
 %files plugin-reportuploader
 %defattr(644,root,root,755)
