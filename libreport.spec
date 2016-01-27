@@ -6,14 +6,13 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.6.0
-Release:	4
+Version:	2.6.3
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	764ef9745518391abe8349f979d6ce1d
+# Source0-md5:	a377e6dc8665e679a72fefd09341c9c5
 Patch0:		format-security.patch
-Patch1:		%{name}-ILP32.patch
 URL:		https://fedorahosted.org/abrt/
 BuildRequires:	asciidoc
 %{?with_tests:BuildRequires:	augeas}
@@ -354,7 +353,6 @@ zgłaszania błędów w systemach RHEL.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 %{__libtoolize}
@@ -386,8 +384,10 @@ rm -rf $RPM_BUILD_ROOT
 %{__rm} $RPM_BUILD_ROOT%{py_sitedir}/report*/*.la
 %{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/report*/*.la
 
-# empty version ru
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/ru_RU
+# empty versions of nb,ru
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{no,ru_RU}
+# not supported by glibc yet
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{ach,aln,bal,ilo}
 
 %find_lang %{name}
 
