@@ -2,7 +2,7 @@
 #
 # Conditional build:
 %bcond_without	tests	# "make check"
-#
+
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
@@ -13,7 +13,7 @@ Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
 # Source0-md5:	a377e6dc8665e679a72fefd09341c9c5
 Patch0:		format-security.patch
-URL:		https://fedorahosted.org/abrt/
+URL:		https://github.com/abrt/libreport
 BuildRequires:	asciidoc
 %{?with_tests:BuildRequires:	augeas}
 BuildRequires:	augeas-devel
