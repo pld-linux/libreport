@@ -1,4 +1,12 @@
 # TODO: teach build system to use python3.2+ __pycache__
+# warning: Installed (but unpackaged) file(s) found:
+#        /etc/libreport/events/report_Uploader.conf
+#        /etc/libreport/workflows.d/report_uReport.conf
+#        /usr/share/libreport/workflows/workflow_uReport.xml
+#        /usr/share/man/man5/report_Uploader.conf.5.gz
+#        /usr/share/man/man5/report_uReport.conf.5.gz
+#        /usr/share/man/man5/upload.conf.5.gz
+
 #
 # Conditional build:
 %bcond_without	tests	# "make check"
