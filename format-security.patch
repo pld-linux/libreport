@@ -1,6 +1,6 @@
---- libreport-2.3.0/src/plugins/reporter-ureport.c.orig	2014-10-12 21:30:27.836212240 +0200
-+++ libreport-2.3.0/src/plugins/reporter-ureport.c	2014-10-12 21:42:03.026183064 +0200
-@@ -246,7 +246,7 @@
+--- libreport-2.7.0/src/plugins/reporter-ureport.c~	2016-04-07 18:24:05.000000000 +0300
++++ libreport-2.7.0/src/plugins/reporter-ureport.c	2016-04-27 10:31:21.566593068 +0300
+@@ -312,7 +312,7 @@
          {
              log(_("This problem has already been reported."));
              if (response->urr_message)
@@ -9,18 +9,9 @@
  
              ret = EXIT_STOP_EVENT_RUN;
          }
---- libreport-2.2.2/src/gui-wizard-gtk/wizard.c.orig	2014-04-20 22:07:04.000000000 +0200
-+++ libreport-2.2.2/src/gui-wizard-gtk/wizard.c	2014-06-14 17:08:36.638269706 +0200
-@@ -1935,7 +1935,7 @@
-         GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-         GTK_MESSAGE_WARNING,
-         GTK_BUTTONS_YES_NO,
--        message);
-+        "%s", message);
- 
-     gtk_window_set_transient_for(GTK_WINDOW(old_private_group), GTK_WINDOW(g_wnd_assistant));
-     gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(old_private_group),
-@@ -3118,7 +3118,7 @@
+--- libreport-2.7.0/src/gui-wizard-gtk/wizard.c~	2016-04-07 18:24:05.000000000 +0300
++++ libreport-2.7.0/src/gui-wizard-gtk/wizard.c	2016-04-27 10:39:33.488656568 +0300
+@@ -3352,7 +3352,7 @@
                  GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                  GTK_MESSAGE_WARNING,
                  GTK_BUTTONS_CLOSE,
@@ -29,9 +20,9 @@
              free(message);
              gtk_window_set_transient_for(GTK_WINDOW(dlg), GTK_WINDOW(g_wnd_assistant));
              gtk_dialog_run(GTK_DIALOG(dlg));
---- libreport-2.3.0/src/plugins/reporter-rhtsupport.c.orig	2014-10-02 10:51:43.000000000 +0200
-+++ libreport-2.3.0/src/plugins/reporter-rhtsupport.c	2014-10-12 21:46:04.766172924 +0200
-@@ -205,7 +205,7 @@
+--- libreport-2.7.0/src/plugins/reporter-rhtsupport.c~	2016-04-07 18:24:05.000000000 +0300
++++ libreport-2.7.0/src/plugins/reporter-rhtsupport.c	2016-04-27 10:35:22.815716392 +0300
+@@ -288,7 +288,7 @@
          ureport_server_response_save_in_dump_dir(resp, dump_dir_name, conf);
  
          if (resp->urr_message)

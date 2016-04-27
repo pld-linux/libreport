@@ -6,17 +6,17 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.6.3
+Version:	2.7.0
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	a377e6dc8665e679a72fefd09341c9c5
+# Source0-md5:	7354fa562de18ab690127a4ff7d5601e
 Patch0:		format-security.patch
 URL:		https://github.com/abrt/libreport
 BuildRequires:	asciidoc
-%{?with_tests:BuildRequires:	augeas}
 BuildRequires:	augeas-devel
+%{?with_tests:BuildRequires:	augeas}
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	curl-devel
@@ -306,8 +306,8 @@ infrastruktury Fedory lub przesyłając zebrane dane po ftp/scp.
 Summary:	Default configuration for reporting bugs via CentOS infrastructure
 Summary(pl.UTF-8):	Domyślna konfiguracja do zgłaszania błędów poprzez infrastrukturę CentOS
 Group:		Applications/File
-Requires:	%{name}-web = %{version}-%{release}
 Requires:	%{name}-plugin-mantisbt = %{version}-%{release}
+Requires:	%{name}-web = %{version}-%{release}
 
 %description centos
 Default configuration for reporting bugs via CentOS infrastructure
@@ -355,11 +355,6 @@ zgłaszania błędów w systemach RHEL.
 %patch0 -p1
 
 %build
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
 %configure \
 	AUGPARSE=/usr/bin/augparse \
 	--disable-silent-rules
