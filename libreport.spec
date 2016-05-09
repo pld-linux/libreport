@@ -1,12 +1,4 @@
 # TODO: teach build system to use python3.2+ __pycache__
-# warning: Installed (but unpackaged) file(s) found:
-#        /etc/libreport/events/report_Uploader.conf
-#        /etc/libreport/workflows.d/report_uReport.conf
-#        /usr/share/libreport/workflows/workflow_uReport.xml
-#        /usr/share/man/man5/report_Uploader.conf.5.gz
-#        /usr/share/man/man5/report_uReport.conf.5.gz
-#        /usr/share/man/man5/upload.conf.5.gz
-
 #
 # Conditional build:
 %bcond_without	tests	# "make check"
@@ -596,6 +588,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-upload
 %config(noreplace) %{_sysconfdir}/libreport/plugins/upload.conf
+%config(noreplace) %{_sysconfdir}/libreport/events/report_Uploader.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/uploader_event.conf
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_uploader.conf
 %{_datadir}/libreport/conf.d/plugins/upload.conf
@@ -603,8 +596,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/libreport/workflows/workflow_Upload.xml
 %{_datadir}/libreport/workflows/workflow_UploadCCpp.xml
 %{_mandir}/man1/reporter-upload.1*
+%{_mandir}/man5/report_Uploader.conf.5*
 %{_mandir}/man5/report_uploader.conf.5*
 %{_mandir}/man5/uploader_event.conf.5*
+%{_mandir}/man5/upload.conf.5*
 
 %files plugin-rhtsupport
 %defattr(644,root,root,755)
@@ -623,12 +618,15 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/reporter-ureport
 %config(noreplace) %{_sysconfdir}/libreport/events.d/emergencyanalysis_event.conf
 %config(noreplace) %{_sysconfdir}/libreport/plugins/ureport.conf
+%config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_uReport.conf
 %{_datadir}/dbus-1/interfaces/com.redhat.problems.configuration.ureport.xml
 %{_datadir}/libreport/conf.d/plugins/ureport.conf
 %{_datadir}/libreport/events/report_uReport.xml
 %{_datadir}/libreport/events/report_EmergencyAnalysis.xml
+%{_datadir}/libreport/workflows/workflow_uReport.xml
 %{_mandir}/man1/reporter-ureport.1*
 %{_mandir}/man5/emergencyanalysis_event.conf.5*
+%{_mandir}/man5/report_uReport.conf.5*
 %{_mandir}/man5/ureport.conf.5*
 
 %files anaconda
