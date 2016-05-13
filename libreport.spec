@@ -7,7 +7,7 @@ Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
 Version:	2.7.0
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
@@ -34,6 +34,8 @@ BuildRequires:	libxml2-devel >= 2
 BuildRequires:	newt-devel
 BuildRequires:	nss-devel
 BuildRequires:	pkgconfig
+# /etc/system-release for non-empty os_release content
+%{?with_tests:BuildRequires:	pld-release >= 3.0-8}
 BuildRequires:	python-devel >= 2
 BuildRequires:	python3-devel >= 1:3
 BuildRequires:	rpmbuild(macros) >= 1.612
@@ -355,6 +357,11 @@ zgłaszania błędów w systemach RHEL.
 %patch0 -p1
 
 %build
+%{__libtoolize}
+%{__aclocal} -I m4
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure \
 	AUGPARSE=/usr/bin/augparse \
 	--disable-silent-rules
