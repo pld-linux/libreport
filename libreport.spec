@@ -6,13 +6,12 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.7.0
-Release:	2
+Version:	2.7.1
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	7354fa562de18ab690127a4ff7d5601e
-Patch0:		format-security.patch
+# Source0-md5:	ad4e7bfc4e3fbb7283bc7dd6f92fe995
 URL:		https://github.com/abrt/libreport
 BuildRequires:	asciidoc
 BuildRequires:	augeas-devel
@@ -354,7 +353,6 @@ zgłaszania błędów w systemach RHEL.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 %{__libtoolize}
