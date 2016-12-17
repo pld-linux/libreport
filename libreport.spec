@@ -6,12 +6,13 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.8.0
+Version:	2.9.0
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	ea9f74ea86ed03a1bae6173e753d6cd8
+# Source0-md5:	8761962012c6cd147582c418d4d92645
+Patch0:		%{name}-format.patch
 URL:		https://github.com/abrt/libreport
 BuildRequires:	asciidoc
 BuildRequires:	augeas-devel
@@ -39,7 +40,6 @@ BuildRequires:	python-devel >= 2
 BuildRequires:	python3-devel >= 1:3
 BuildRequires:	rpmbuild(macros) >= 1.612
 BuildRequires:	satyr-devel
-# libsystemd-journal
 BuildRequires:	systemd-devel
 BuildRequires:	xmlrpc-c-client-devel
 BuildRequires:	xmlrpc-c-devel
@@ -276,6 +276,19 @@ Plugin to report bugs into RH support system.
 %description plugin-rhtsupport -l pl.UTF-8
 Wtyczka zgłaszająca problemy do systemu obsługi RH.
 
+%package plugin-systemd-journal
+Summary:	libreport's systemd journal reporter plugin
+Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń w kronice systemd
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description plugin-systemd-journal
+The simple reporter plugin which writes a report to the systemd
+journal.
+
+%description plugin-systemd-journal -l pl.UTF-8
+Prosta wtyczka zgłoszeń zapisująca raport w kronice systemd.
+
 %package plugin-ureport
 Summary:	libreport's micro report plugin
 Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń typu micro-report
@@ -353,6 +366,7 @@ zgłaszania błędów w systemach RHEL.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %{__libtoolize}
@@ -618,6 +632,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man5/rhtsupport.conf.5*
 %{_mandir}/man5/rhtsupport_event.conf.5*
 
+%files plugin-systemd-journal
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/reporter-systemd-journal
+%{_mandir}/man1/reporter-systemd-journal.1*
+
 %files plugin-ureport
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-ureport
@@ -657,6 +676,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/libreport/events/report_CentOSBugTracker.xml
 %{_datadir}/libreport/workflows/workflow_CentOSCCpp.xml
 %{_datadir}/libreport/workflows/workflow_CentOSJava.xml
+%{_datadir}/libreport/workflows/workflow_CentOSJavaScript.xml
 %{_datadir}/libreport/workflows/workflow_CentOSKerneloops.xml
 %{_datadir}/libreport/workflows/workflow_CentOSLibreport.xml
 %{_datadir}/libreport/workflows/workflow_CentOSPython.xml

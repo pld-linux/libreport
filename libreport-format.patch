@@ -1,0 +1,11 @@
+--- libreport-2.9.0/src/gui-wizard-gtk/wizard.c.orig	2016-11-28 23:44:35.000000000 +0100
++++ libreport-2.9.0/src/gui-wizard-gtk/wizard.c	2016-12-16 23:23:34.616353342 +0100
+@@ -3094,7 +3094,7 @@
+                 }
+                 else
+                 {
+-                    log(msg);
++                    log("%s", msg);
+                     free(msg);
+                 }
+             }
