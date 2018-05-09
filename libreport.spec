@@ -47,6 +47,7 @@ BuildRequires:	xmlto
 BuildRequires:	mount
 # /etc/system-release for non-empty os_release content
 BuildRequires:	pld-release >= 3.0-8
+BuildRequires:	sed >= 4.0
 %endif
 Requires:	glib2 >= 1:2.43
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -371,6 +372,9 @@ zgłaszania błędów w systemach RHEL.
 %setup -q
 
 ./gen-version
+
+# fails on builders due to forkpty()
+%{__sed} -i -e '/client\.at/d' tests/Makefile.am
 
 %build
 %{__gettextize}
