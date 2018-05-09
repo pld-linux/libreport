@@ -374,7 +374,7 @@ zgłaszania błędów w systemach RHEL.
 ./gen-version
 
 # fails on builders due to forkpty()
-%{__sed} -i -e '/client\.at/d' tests/Makefile.am
+%{__sed} -i -e 's/client\.at/\$(nil)/' tests/Makefile.am
 
 %build
 %{__gettextize}
