@@ -34,8 +34,6 @@ BuildRequires:	libxml2-devel >= 2
 BuildRequires:	newt-devel
 BuildRequires:	nss-devel
 BuildRequires:	pkgconfig
-# /etc/system-release for non-empty os_release content
-%{?with_tests:BuildRequires:	pld-release >= 3.0-8}
 %{?with_python2:BuildRequires:	python-devel >= 2}
 %{?with_python3:BuildRequires:	python3-devel >= 1:3}
 BuildRequires:	rpmbuild(macros) >= 1.612
@@ -44,6 +42,12 @@ BuildRequires:	systemd-devel
 BuildRequires:	xmlrpc-c-client-devel
 BuildRequires:	xmlrpc-c-devel
 BuildRequires:	xmlto
+%if %{with tests}
+# findmnt
+BuildRequires:	mount
+# /etc/system-release for non-empty os_release content
+BuildRequires:	pld-release >= 3.0-8
+%endif
 Requires:	glib2 >= 1:2.43
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
