@@ -385,7 +385,7 @@ zgłaszania błędów w systemach RHEL.
 %{__make}
 
 %if %{with tests}
-%{__make} check || (cat tests/test-suite.log && /bin/false)
+%{__make} check || (cat tests/testsuite.log && /bin/false)
 %endif
 
 %install
