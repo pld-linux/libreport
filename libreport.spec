@@ -1,18 +1,18 @@
-# TODO: teach build system to use python3.2+ __pycache__
 #
 # Conditional build:
+%bcond_without	python2	# Python 2.x modules
+%bcond_without	python3	# Python 3.x modules
 %bcond_without	tests	# "make check"
 
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.9.0
-Release:	2
+Version:	2.9.5
+Release:	1
 License:	GPL v2+
 Group:		Libraries
-Source0:	https://fedorahosted.org/released/abrt/%{name}-%{version}.tar.gz
-# Source0-md5:	8761962012c6cd147582c418d4d92645
-Patch0:		%{name}-format.patch
+Source0:	https://github.com/abrt/libreport/archive/%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	a3abcdfbf1b1ec27ce6c44d5ba22b31b
 URL:		https://github.com/abrt/libreport
 BuildRequires:	asciidoc
 BuildRequires:	augeas-devel
@@ -23,7 +23,7 @@ BuildRequires:	curl-devel
 BuildRequires:	dbus-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	gettext-tools >= 0.17
-BuildRequires:	glib2-devel >= 1:2.21
+BuildRequires:	glib2-devel >= 1:2.43
 BuildRequires:	gtk+3-devel >= 3.0
 BuildRequires:	intltool >= 0.35.0
 BuildRequires:	json-c-devel
@@ -36,16 +36,15 @@ BuildRequires:	nss-devel
 BuildRequires:	pkgconfig
 # /etc/system-release for non-empty os_release content
 %{?with_tests:BuildRequires:	pld-release >= 3.0-8}
-BuildRequires:	python-devel >= 2
-BuildRequires:	python3-devel >= 1:3
+%{?with_python2:BuildRequires:	python-devel >= 2}
+%{?with_python3:BuildRequires:	python3-devel >= 1:3}
 BuildRequires:	rpmbuild(macros) >= 1.612
 BuildRequires:	satyr-devel
 BuildRequires:	systemd-devel
 BuildRequires:	xmlrpc-c-client-devel
 BuildRequires:	xmlrpc-c-devel
 BuildRequires:	xmlto
-BuildRequires:	xz-devel
-Requires:	glib2 >= 1:2.21
+Requires:	glib2 >= 1:2.43
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -62,7 +61,7 @@ Summary:	Header files for libreport libraries
 Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek libreport
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.21
+Requires:	glib2-devel >= 1:2.43
 
 %description devel
 Header files for libreport libraries.
@@ -366,9 +365,12 @@ zgłaszania błędów w systemach RHEL.
 
 %prep
 %setup -q
-%patch0 -p1
+
+./gen-version
 
 %build
+%{__gettextize}
+%{__intltoolize}
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
@@ -376,7 +378,9 @@ zgłaszania błędów w systemach RHEL.
 %{__automake}
 %configure \
 	AUGPARSE=/usr/bin/augparse \
-	--disable-silent-rules
+	--disable-silent-rules \
+	%{!?with_python2:--without-python2} \
+	%{!?with_python3:--without-python3}
 
 %{__make}
 
@@ -394,9 +398,16 @@ rm -rf $RPM_BUILD_ROOT
 # compat layer for compatibility tool
 %{__rm} $RPM_BUILD_ROOT{%{_bindir}/report,%{_mandir}/man1/report.1}
 
+%if %{with python2}
 %py_postclean
 %{__rm} $RPM_BUILD_ROOT%{py_sitedir}/report*/*.la
-%{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/report*/*.la
+%endif
+%if %{with python3}
+# automake uses $PYTHON for both versions, recompile using python3
+%py_postclean %{py3_sitedir}
+%py3_comp $RPM_BUILD_ROOT%{py3_sitedir}
+%py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}
+%endif
 
 # empty versions of nb,ru
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{no,ru_RU}
@@ -419,7 +430,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc README
+%doc CHANGELOG.md README.md
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/report_event.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/forbidden_words.conf
@@ -468,6 +479,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libreport/ureport.h
 %{_includedir}/libreport/workflow.h
 %{_includedir}/libreport/xml_parser.h
+%{_includedir}/libreport/helpers
 %{_pkgconfigdir}/libreport.pc
 
 %files web
@@ -481,6 +493,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libreport/libreport_curl.h
 %{_pkgconfigdir}/libreport-web.pc
 
+%if %{with python2}
 %files -n python-%{name}
 %defattr(644,root,root,755)
 %dir %{py_sitedir}/report
@@ -491,7 +504,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{py_sitedir}/reportclient
 %attr(755,root,root) %{py_sitedir}/reportclient/_reportclient.so
 %{py_sitedir}/reportclient/*.py[co]
+%endif
 
+%if %{with python3}
 %files -n python3-%{name}
 %defattr(644,root,root,755)
 %dir %{py3_sitedir}/report
@@ -502,6 +517,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{py3_sitedir}/reportclient
 %attr(755,root,root) %{py3_sitedir}/reportclient/_reportclient3.so
 %{py3_sitedir}/reportclient/*.py*
+%endif
 
 %files cli
 %defattr(644,root,root,755)
@@ -628,6 +644,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/dbus-1/interfaces/com.redhat.problems.configuration.rhtsupport.xml
 %{_datadir}/libreport/conf.d/plugins/rhtsupport.conf
 %{_datadir}/libreport/events/report_RHTSupport.xml
+%{_datadir}/libreport/events/report_RHTSupport_AddData.xml
 %{_mandir}/man1/reporter-rhtsupport.1*
 %{_mandir}/man5/rhtsupport.conf.5*
 %{_mandir}/man5/rhtsupport_event.conf.5*
@@ -696,6 +713,7 @@ rm -rf $RPM_BUILD_ROOT
 %files rhel
 %defattr(644,root,root,755)
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_rhel.conf
+%config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_rhel_add_data.conf
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_rhel_bugzilla.conf
 %{_datadir}/libreport/workflows/workflow_RHEL*.xml
 %{_mandir}/man5/report_rhel.conf.5*
