@@ -375,6 +375,8 @@ zgłaszania błędów w systemach RHEL.
 
 # set_echo test from client.at fails on builders due to forkpty()
 %{__sed} -i -e '/client\.at/d' tests/testsuite.at
+# process_has_own_root randomly fails in chroot environment
+%{__sed} -i -e '/proc_helpers\.at/d' tests/testsuite.at
 
 %build
 %{__gettextize}
