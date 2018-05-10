@@ -373,8 +373,8 @@ zgłaszania błędów w systemach RHEL.
 
 ./gen-version
 
-# fails on builders due to forkpty()
-%{__sed} -i -e 's/client\.at/\$(nil)/' tests/Makefile.am
+# set_echo test from client.at fails on builders due to forkpty()
+%{__sed} -i -e '/client\.at/d/' tests/testsuite.at
 
 %build
 %{__gettextize}
