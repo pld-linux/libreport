@@ -8,7 +8,7 @@ Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
 Version:	2.9.5
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://github.com/abrt/libreport/archive/%{version}/%{name}-%{version}.tar.gz
@@ -411,6 +411,7 @@ rm -rf $RPM_BUILD_ROOT
 %{__rm} $RPM_BUILD_ROOT%{py_sitedir}/report*/*.la
 %endif
 %if %{with python3}
+%{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/report*/*.la
 # automake uses $PYTHON for both versions, recompile using python3
 %py_postclean %{py3_sitedir}
 %py3_comp $RPM_BUILD_ROOT%{py3_sitedir}
