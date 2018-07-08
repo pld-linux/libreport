@@ -8,7 +8,7 @@ Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
 Version:	2.9.5
-Release:	5
+Release:	6
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://github.com/abrt/libreport/archive/%{version}/%{name}-%{version}.tar.gz
@@ -31,6 +31,8 @@ BuildRequires:	libproxy-devel
 BuildRequires:	libtar-devel
 BuildRequires:	libtool >= 1:1.4.2
 BuildRequires:	libxml2-devel >= 2
+%{?with_tests:BuildRequires:	lz4}
+BuildRequires:	lz4-devel
 BuildRequires:	newt-devel
 BuildRequires:	nss-devel
 BuildRequires:	pkgconfig
