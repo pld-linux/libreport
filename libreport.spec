@@ -1,18 +1,17 @@
 #
 # Conditional build:
-%bcond_without	python2	# Python 2.x modules
 %bcond_without	python3	# Python 3.x modules
 %bcond_without	tests	# "make check"
 
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.9.5
-Release:	7
+Version:	2.11.2
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://github.com/abrt/libreport/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	a3abcdfbf1b1ec27ce6c44d5ba22b31b
+# Source0-md5:	aed10d1a5a6dbd28686d79ac21227304
 URL:		https://github.com/abrt/libreport
 BuildRequires:	asciidoc
 BuildRequires:	augeas-devel
@@ -31,12 +30,11 @@ BuildRequires:	libproxy-devel
 BuildRequires:	libtar-devel
 BuildRequires:	libtool >= 1:1.4.2
 BuildRequires:	libxml2-devel >= 2
-%{?with_tests:BuildRequires:	lz4}
 BuildRequires:	lz4-devel
+%{?with_tests:BuildRequires:	lz4}
 BuildRequires:	newt-devel
 BuildRequires:	nss-devel
 BuildRequires:	pkgconfig
-%{?with_python2:BuildRequires:	python-devel >= 2}
 %{?with_python3:BuildRequires:	python3-devel >= 1:3}
 BuildRequires:	rpmbuild(macros) >= 1.612
 BuildRequires:	satyr-devel
@@ -379,6 +377,8 @@ zgłaszania błędów w systemach RHEL.
 %{__sed} -i -e '/client\.at/d' tests/testsuite.at
 # process_has_own_root randomly fails in chroot environment
 %{__sed} -i -e '/proc_helpers\.at/d' tests/testsuite.at
+# short_backtrace expects outdated output format
+%{__sed} -i -e '/problem_report\.at/d' tests/testsuite.at
 
 %build
 %{__gettextize}
@@ -391,7 +391,6 @@ zgłaszania błędów w systemach RHEL.
 %configure \
 	AUGPARSE=/usr/bin/augparse \
 	--disable-silent-rules \
-	%{!?with_python2:--without-python2} \
 	%{!?with_python3:--without-python3}
 
 %{__make}
@@ -410,14 +409,8 @@ rm -rf $RPM_BUILD_ROOT
 # compat layer for compatibility tool
 %{__rm} $RPM_BUILD_ROOT{%{_bindir}/report,%{_mandir}/man1/report.1}
 
-%if %{with python2}
-%py_postclean
-%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/report*/*.la
-%endif
 %if %{with python3}
 %{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/report*/*.la
-# automake uses $PYTHON for both versions, recompile using python3
-%py_postclean %{py3_sitedir}
 %py3_comp $RPM_BUILD_ROOT%{py3_sitedir}
 %py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}
 %endif
@@ -488,6 +481,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libreport/internal_libreport.h
 %{_includedir}/libreport/problem_report.h
 %{_includedir}/libreport/problem_utils.h
+%{_includedir}/libreport/report_result.h
 %{_includedir}/libreport/reporters.h
 %{_includedir}/libreport/ureport.h
 %{_includedir}/libreport/workflow.h
@@ -506,30 +500,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libreport/libreport_curl.h
 %{_pkgconfigdir}/libreport-web.pc
 
-%if %{with python2}
-%files -n python-%{name}
-%defattr(644,root,root,755)
-%dir %{py_sitedir}/report
-%attr(755,root,root) %{py_sitedir}/report/_pyreport.so
-%{py_sitedir}/report/*.py[co]
-%dir %{py_sitedir}/report/io
-%{py_sitedir}/report/io/*.py[co]
-%dir %{py_sitedir}/reportclient
-%attr(755,root,root) %{py_sitedir}/reportclient/_reportclient.so
-%{py_sitedir}/reportclient/*.py[co]
-%endif
-
 %if %{with python3}
 %files -n python3-%{name}
 %defattr(644,root,root,755)
 %dir %{py3_sitedir}/report
 %attr(755,root,root) %{py3_sitedir}/report/_py3report.so
 %{py3_sitedir}/report/*.py*
+%{py3_sitedir}/report/__pycache__
 %dir %{py3_sitedir}/report/io
 %{py3_sitedir}/report/io/*.py*
+%{py3_sitedir}/report/io/__pycache__
 %dir %{py3_sitedir}/reportclient
 %attr(755,root,root) %{py3_sitedir}/reportclient/_reportclient3.so
 %{py3_sitedir}/reportclient/*.py*
+%{py3_sitedir}/reportclient/__pycache__
 %endif
 
 %files cli
@@ -565,9 +549,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_format_analyzer_libreport.conf
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_format_kernel.conf
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_formatdup.conf
+%{_sysconfdir}/libreport/plugins/bugzilla_formatdup_analyzer_libreport.conf
 %config(noreplace) %{_sysconfdir}/libreport/events/report_Bugzilla.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/bugzilla_event.conf
-%{_datadir}/dbus-1/interfaces/com.redhat.problems.configuration.bugzilla.xml
 %{_datadir}/libreport/conf.d/plugins/bugzilla.conf
 %{_datadir}/libreport/events/report_Bugzilla.xml
 %{_datadir}/libreport/events/watch_Bugzilla.xml
@@ -579,6 +563,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man5/bugzilla_format_kernel.conf.5*
 %{_mandir}/man5/bugzilla_formatdup.conf.5*
 %{_mandir}/man5/report_Bugzilla.conf.5*
+%{_mandir}/man5/bugzilla_formatdup_analyzer_libreport.conf.5*
 
 %files plugin-kerneloops
 %defattr(644,root,root,755)
@@ -606,7 +591,6 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/libreport/plugins/mailx.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/mailx_event.conf
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_mailx.conf
-%{_datadir}/dbus-1/interfaces/com.redhat.problems.configuration.mailx.xml
 %{_datadir}/libreport/conf.d/plugins/mailx.conf
 %{_datadir}/libreport/events/report_Mailx.xml
 %{_datadir}/libreport/workflows/workflow_Mailx.xml
@@ -654,7 +638,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/reporter-rhtsupport
 %config(noreplace) %{_sysconfdir}/libreport/plugins/rhtsupport.conf
 %config(noreplace) %{_sysconfdir}/libreport/events.d/rhtsupport_event.conf
-%{_datadir}/dbus-1/interfaces/com.redhat.problems.configuration.rhtsupport.xml
 %{_datadir}/libreport/conf.d/plugins/rhtsupport.conf
 %{_datadir}/libreport/events/report_RHTSupport.xml
 %{_datadir}/libreport/events/report_RHTSupport_AddData.xml
@@ -670,16 +653,12 @@ rm -rf $RPM_BUILD_ROOT
 %files plugin-ureport
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-ureport
-%config(noreplace) %{_sysconfdir}/libreport/events.d/emergencyanalysis_event.conf
 %config(noreplace) %{_sysconfdir}/libreport/plugins/ureport.conf
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_uReport.conf
-%{_datadir}/dbus-1/interfaces/com.redhat.problems.configuration.ureport.xml
 %{_datadir}/libreport/conf.d/plugins/ureport.conf
 %{_datadir}/libreport/events/report_uReport.xml
-%{_datadir}/libreport/events/report_EmergencyAnalysis.xml
 %{_datadir}/libreport/workflows/workflow_uReport.xml
 %{_mandir}/man1/reporter-ureport.1*
-%{_mandir}/man5/emergencyanalysis_event.conf.5*
 %{_mandir}/man5/report_uReport.conf.5*
 %{_mandir}/man5/ureport.conf.5*
 
