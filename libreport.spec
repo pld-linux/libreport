@@ -6,12 +6,13 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.11.2
+Version:	2.12.0
 Release:	1
 License:	GPL v2+
 Group:		Libraries
+#Source0Download: https://github.com/abrt/libreport/releases
 Source0:	https://github.com/abrt/libreport/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	aed10d1a5a6dbd28686d79ac21227304
+# Source0-md5:	09153b254ce2d675ca77788986702ac5
 URL:		https://github.com/abrt/libreport
 BuildRequires:	asciidoc
 BuildRequires:	augeas-devel
@@ -22,7 +23,7 @@ BuildRequires:	curl-devel
 BuildRequires:	dbus-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	gettext-tools >= 0.17
-BuildRequires:	glib2-devel >= 1:2.43
+BuildRequires:	glib2-devel >= 1:2.43.4
 BuildRequires:	gtk+3-devel >= 3.0
 BuildRequires:	intltool >= 0.35.0
 BuildRequires:	json-c-devel
@@ -30,15 +31,13 @@ BuildRequires:	libproxy-devel
 BuildRequires:	libtar-devel
 BuildRequires:	libtool >= 1:1.4.2
 BuildRequires:	libxml2-devel >= 2
-BuildRequires:	lz4-devel
-%{?with_tests:BuildRequires:	lz4}
 BuildRequires:	newt-devel
 BuildRequires:	nss-devel
 BuildRequires:	pkgconfig
-%{?with_python3:BuildRequires:	python3-devel >= 1:3}
+%{?with_python3:BuildRequires:	python3-devel >= 1:3.6}
 BuildRequires:	rpmbuild(macros) >= 1.612
 BuildRequires:	satyr-devel
-BuildRequires:	systemd-devel
+BuildRequires:	systemd-devel >= 1:209
 BuildRequires:	xmlrpc-c-client-devel
 BuildRequires:	xmlrpc-c-devel
 BuildRequires:	xmlto
@@ -49,7 +48,7 @@ BuildRequires:	mount
 BuildRequires:	pld-release >= 3.0-8
 BuildRequires:	sed >= 4.0
 %endif
-Requires:	glib2 >= 1:2.43
+Requires:	glib2 >= 1:2.43.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -66,7 +65,7 @@ Summary:	Header files for libreport libraries
 Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek libreport
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.43
+Requires:	glib2-devel >= 1:2.43.4
 
 %description devel
 Header files for libreport libraries.
@@ -106,25 +105,14 @@ Development headers for libreport-web.
 %description web-devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki libreport-web.
 
-%package -n python-%{name}
-Summary:	Python 2 bindings for libreport libraries
-Summary(pl.UTF-8):	Wiązania Pythona 2 do bibliotek libreport
-Group:		Libraries/Python
-Requires:	%{name} = %{version}-%{release}
-Provides:	%{name}-python = %{version}-%{release}
-Obsoletes:	libreport-python < 2.1.3-1
-
-%description -n python-%{name}
-Python 2 bindings for libreport libraries.
-
-%description -n python-%{name} -l pl.UTF-8
-Wiązania Pythona 2 do bibliotek libreport
-
 %package -n python3-%{name}
 Summary:	Python 3 bindings for libreport libraries
 Summary(pl.UTF-8):	Wiązania Pythona 3 do bibliotek libreport
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
+Requires:	python3-libs >= 1:3.6
+Obsoletes:	libreport-python < 2.1.3-1
+Obsoletes:	python-libreport
 
 %description -n python3-%{name}
 Python 3 bindings for libreport libraries.
@@ -415,10 +403,7 @@ rm -rf $RPM_BUILD_ROOT
 %py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}
 %endif
 
-# empty versions of nb,ru
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{no,ru_RU}
-# not supported by glibc yet
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/{ach,aln,bal,ilo}
+%{__mv} $RPM_BUILD_ROOT%{_localedir}/{sr_Latn,sr@latin}
 
 %find_lang %{name}
 
