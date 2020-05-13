@@ -6,13 +6,13 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.12.0
-Release:	2
+Version:	2.13.1
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/abrt/libreport/releases
 Source0:	https://github.com/abrt/libreport/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	09153b254ce2d675ca77788986702ac5
+# Source0-md5:	d2b50162545713a934576cc10d374632
 URL:		https://github.com/abrt/libreport
 BuildRequires:	asciidoc
 BuildRequires:	augeas-devel
@@ -20,7 +20,6 @@ BuildRequires:	augeas-devel
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	curl-devel
-BuildRequires:	dbus-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	gettext-tools >= 0.17
 BuildRequires:	glib2-devel >= 1:2.43.4
@@ -31,6 +30,7 @@ BuildRequires:	libproxy-devel
 BuildRequires:	libtar-devel
 BuildRequires:	libtool >= 1:1.4.2
 BuildRequires:	libxml2-devel >= 2
+BuildRequires:	nettle-devel
 BuildRequires:	newt-devel
 BuildRequires:	nss-devel
 BuildRequires:	pkgconfig
@@ -433,8 +433,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/%{name}/workflows.d
 %attr(755,root,root) %{_libdir}/libreport.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libreport.so.0
-%attr(755,root,root) %{_libdir}/libabrt_dbus.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libabrt_dbus.so.0
 %{_datadir}/augeas/lenses/libreport.aug
 %dir %{_datadir}/libreport
 %dir %{_datadir}/libreport/conf.d
@@ -450,7 +448,6 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libreport.so
-%attr(755,root,root) %{_libdir}/libabrt_dbus.so
 %dir %{_includedir}/libreport
 %{_includedir}/libreport/client.h
 %{_includedir}/libreport/config_item_info.h
@@ -462,7 +459,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libreport/problem_data.h
 %{_includedir}/libreport/report.h
 %{_includedir}/libreport/run_event.h
-%{_includedir}/libreport/internal_abrt_dbus.h
 %{_includedir}/libreport/internal_libreport.h
 %{_includedir}/libreport/problem_report.h
 %{_includedir}/libreport/problem_utils.h
