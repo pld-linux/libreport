@@ -6,13 +6,13 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.13.1
+Version:	2.14.0
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/abrt/libreport/releases
 Source0:	https://github.com/abrt/libreport/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	d2b50162545713a934576cc10d374632
+# Source0-md5:	bdc4d14d867927c2b5a6c78747f3db6d
 URL:		https://github.com/abrt/libreport
 BuildRequires:	asciidoc
 BuildRequires:	augeas-devel
@@ -26,6 +26,7 @@ BuildRequires:	glib2-devel >= 1:2.43.4
 BuildRequires:	gtk+3-devel >= 3.0
 BuildRequires:	intltool >= 0.35.0
 BuildRequires:	json-c-devel
+BuildRequires:	libarchive-devel
 BuildRequires:	libproxy-devel
 BuildRequires:	libtar-devel
 BuildRequires:	libtool >= 1:1.4.2
@@ -49,6 +50,7 @@ BuildRequires:	pld-release >= 3.0-8
 BuildRequires:	sed >= 4.0
 %endif
 Requires:	glib2 >= 1:2.43.4
+Obsoletes:	libreport-plugin-rhtsupport < 2.14.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -255,19 +257,6 @@ ticketing system.
 Wtyczka zgłaszająca błędy poprzez serwer anonimowego FTP powiązany z
 systemem biletów.
 
-%package plugin-rhtsupport
-Summary:	libreport's RHTSupport plugin
-Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez RHTSupport
-Group:		Libraries
-Requires:	%{name}-web = %{version}-%{release}
-Obsoletes:	abrt-plugin-rhtsupport < 2.0.4
-
-%description plugin-rhtsupport
-Plugin to report bugs into RH support system.
-
-%description plugin-rhtsupport -l pl.UTF-8
-Wtyczka zgłaszająca problemy do systemu obsługi RH.
-
 %package plugin-systemd-journal
 Summary:	libreport's systemd journal reporter plugin
 Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń w kronice systemd
@@ -394,8 +383,6 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
-# compat layer for compatibility tool
-%{__rm} $RPM_BUILD_ROOT{%{_bindir}/report,%{_mandir}/man1/report.1}
 
 %if %{with python3}
 %{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/report*/*.la
@@ -432,7 +419,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/%{name}/plugins
 %dir %{_sysconfdir}/%{name}/workflows.d
 %attr(755,root,root) %{_libdir}/libreport.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libreport.so.0
+%attr(755,root,root) %ghost %{_libdir}/libreport.so.1
 %{_datadir}/augeas/lenses/libreport.aug
 %dir %{_datadir}/libreport
 %dir %{_datadir}/libreport/conf.d
@@ -473,7 +460,7 @@ rm -rf $RPM_BUILD_ROOT
 %files web
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libreport-web.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libreport-web.so.0
+%attr(755,root,root) %ghost %{_libdir}/libreport-web.so.1
 
 %files web-devel
 %defattr(644,root,root,755)
@@ -511,7 +498,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/report-gtk
 %attr(755,root,root) %{_libdir}/libreport-gtk.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libreport-gtk.so.0
+%attr(755,root,root) %ghost %{_libdir}/libreport-gtk.so.1
 %{_mandir}/man1/report-gtk.1*
 
 %files gtk-devel
@@ -614,18 +601,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man5/uploader_event.conf.5*
 %{_mandir}/man5/upload.conf.5*
 
-%files plugin-rhtsupport
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/reporter-rhtsupport
-%config(noreplace) %{_sysconfdir}/libreport/plugins/rhtsupport.conf
-%config(noreplace) %{_sysconfdir}/libreport/events.d/rhtsupport_event.conf
-%{_datadir}/libreport/conf.d/plugins/rhtsupport.conf
-%{_datadir}/libreport/events/report_RHTSupport.xml
-%{_datadir}/libreport/events/report_RHTSupport_AddData.xml
-%{_mandir}/man1/reporter-rhtsupport.1*
-%{_mandir}/man5/rhtsupport.conf.5*
-%{_mandir}/man5/rhtsupport_event.conf.5*
-
 %files plugin-systemd-journal
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-systemd-journal
@@ -650,7 +625,6 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_formatdup_anaconda.conf
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/anaconda_event.conf
 %{_datadir}/libreport/workflows/workflow_AnacondaFedora.xml
-%{_datadir}/libreport/workflows/workflow_AnacondaRHEL.xml
 %{_datadir}/libreport/workflows/workflow_AnacondaRHELBugzilla.xml
 %{_datadir}/libreport/workflows/workflow_AnacondaUpload.xml
 %{_mandir}/man5/anaconda_event.conf.5*
@@ -685,9 +659,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files rhel
 %defattr(644,root,root,755)
-%config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_rhel.conf
-%config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_rhel_add_data.conf
 %config(noreplace) %{_sysconfdir}/libreport/workflows.d/report_rhel_bugzilla.conf
-%{_datadir}/libreport/workflows/workflow_RHEL*.xml
-%{_mandir}/man5/report_rhel.conf.5*
+%{_datadir}/libreport/workflows/workflow_RHELBugzilla*.xml
 %{_mandir}/man5/report_rhel_bugzilla.conf.5*
