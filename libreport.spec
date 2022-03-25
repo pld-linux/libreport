@@ -7,7 +7,7 @@ Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
 Version:	2.14.0
-Release:	3
+Release:	4
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/abrt/libreport/releases
