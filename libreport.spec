@@ -6,19 +6,19 @@
 Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
-Version:	2.14.0
-Release:	5
+Version:	2.17.15
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/abrt/libreport/releases
 Source0:	https://github.com/abrt/libreport/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	bdc4d14d867927c2b5a6c78747f3db6d
+# Source0-md5:	1058dd48bb6308a07f380d1eeb66b504
 URL:		https://github.com/abrt/libreport
 BuildRequires:	asciidoc
 BuildRequires:	augeas-devel
 %{?with_tests:BuildRequires:	augeas}
 BuildRequires:	autoconf >= 2.50
-BuildRequires:	automake
+BuildRequires:	automake >= 1:1.11
 BuildRequires:	curl-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	gettext-tools >= 0.17
@@ -28,8 +28,7 @@ BuildRequires:	intltool >= 0.35.0
 BuildRequires:	json-c-devel
 BuildRequires:	libarchive-devel
 BuildRequires:	libproxy-devel
-BuildRequires:	libtar-devel
-BuildRequires:	libtool >= 1:1.4.2
+BuildRequires:	libtool >= 2:2
 BuildRequires:	libxml2-devel >= 2
 BuildRequires:	nettle-devel
 BuildRequires:	newt-devel
@@ -37,7 +36,7 @@ BuildRequires:	nss-devel
 BuildRequires:	pkgconfig
 %{?with_python3:BuildRequires:	python3-devel >= 1:3.6}
 BuildRequires:	rpmbuild(macros) >= 1.612
-BuildRequires:	satyr-devel
+BuildRequires:	satyr-devel >= 0.38
 BuildRequires:	systemd-devel >= 1:209
 BuildRequires:	xmlrpc-c-client-devel
 BuildRequires:	xmlrpc-c-devel
@@ -50,6 +49,7 @@ BuildRequires:	pld-release >= 3.0-8
 BuildRequires:	sed >= 4.0
 %endif
 Requires:	glib2 >= 1:2.43.4
+Requires:	satyr-libs >= 0.38
 Obsoletes:	libreport-plugin-rhtsupport < 2.14.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -97,7 +97,7 @@ Requires:	curl-devel
 Requires:	json-c-devel
 Requires:	libproxy-devel
 Requires:	libxml2-devel >= 2
-Requires:	satyr-devel
+Requires:	satyr-devel >= 0.38
 Requires:	xmlrpc-c-client-devel
 Requires:	xmlrpc-c-devel
 
@@ -114,7 +114,7 @@ Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 Requires:	python3-libs >= 1:3.6
 Obsoletes:	libreport-python < 2.1.3-1
-Obsoletes:	python-libreport
+Obsoletes:	python-libreport < 2.11
 
 %description -n python3-%{name}
 Python 3 bindings for libreport libraries.
@@ -177,6 +177,7 @@ Summary:	libreport's bugzilla plugin
 Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez Bugzillę
 Group:		Libraries
 Requires:	%{name}-web = %{version}-%{release}
+Requires:	python3-%{version} = %{version}-%{release}
 Obsoletes:	abrt-plugin-bugzilla < 2.0.4
 
 %description plugin-bugzilla
@@ -412,6 +413,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/report_event.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/forbidden_words.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/ignored_elements.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/ignored_words.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/libreport.conf
 %dir %{_sysconfdir}/%{name}/events
@@ -419,7 +421,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/%{name}/plugins
 %dir %{_sysconfdir}/%{name}/workflows.d
 %attr(755,root,root) %{_libdir}/libreport.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libreport.so.1
+%attr(755,root,root) %ghost %{_libdir}/libreport.so.2
 %{_datadir}/augeas/lenses/libreport.aug
 %dir %{_datadir}/libreport
 %dir %{_datadir}/libreport/conf.d
@@ -428,6 +430,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/libreport/events
 %dir %{_datadir}/libreport/workflows
 %{_mandir}/man5/forbidden_words.conf.5*
+%{_mandir}/man5/ignored_elements.conf.5*
 %{_mandir}/man5/ignored_words.conf.5*
 %{_mandir}/man5/libreport.conf.5*
 %{_mandir}/man5/report_event.conf.5*
@@ -460,7 +463,7 @@ rm -rf $RPM_BUILD_ROOT
 %files web
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libreport-web.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libreport-web.so.1
+%attr(755,root,root) %ghost %{_libdir}/libreport-web.so.2
 
 %files web-devel
 %defattr(644,root,root,755)
@@ -473,15 +476,18 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %dir %{py3_sitedir}/report
 %attr(755,root,root) %{py3_sitedir}/report/_py3report.so
-%{py3_sitedir}/report/*.py*
+%{py3_sitedir}/report/*.py
 %{py3_sitedir}/report/__pycache__
 %dir %{py3_sitedir}/report/io
-%{py3_sitedir}/report/io/*.py*
+%{py3_sitedir}/report/io/*.py
 %{py3_sitedir}/report/io/__pycache__
 %dir %{py3_sitedir}/reportclient
 %attr(755,root,root) %{py3_sitedir}/reportclient/_reportclient3.so
-%{py3_sitedir}/reportclient/*.py*
+%{py3_sitedir}/reportclient/*.py
 %{py3_sitedir}/reportclient/__pycache__
+%dir %{py3_sitedir}/reportclient/internal
+%{py3_sitedir}/reportclient/internal/*.py
+%{py3_sitedir}/reportclient/internal/__pycache__
 %endif
 
 %files cli
@@ -512,6 +518,7 @@ rm -rf $RPM_BUILD_ROOT
 %files plugin-bugzilla
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/reporter-bugzilla
+%attr(755,root,root) %{_bindir}/reporter-bugzilla-python
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla.conf
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_format.conf
 %config(noreplace) %{_sysconfdir}/libreport/plugins/bugzilla_format_analyzer_libreport.conf
