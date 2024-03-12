@@ -7,7 +7,7 @@ Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
 Version:	2.17.15
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/abrt/libreport/releases
@@ -177,7 +177,7 @@ Summary:	libreport's bugzilla plugin
 Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń przez Bugzillę
 Group:		Libraries
 Requires:	%{name}-web = %{version}-%{release}
-Requires:	python3-%{version} = %{version}-%{release}
+Requires:	python3-%{name} = %{version}-%{release}
 Obsoletes:	abrt-plugin-bugzilla < 2.0.4
 
 %description plugin-bugzilla
