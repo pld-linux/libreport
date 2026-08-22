@@ -7,7 +7,7 @@ Summary:	Generic library for reporting various problems
 Summary(pl.UTF-8):	Ogólna biblioteka do zgłaszania różnych problemów
 Name:		libreport
 Version:	2.17.15
-Release:	5
+Release:	6
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/abrt/libreport/releases
@@ -20,33 +20,27 @@ BuildRequires:	augeas-devel
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	curl-devel
-BuildRequires:	desktop-file-utils
 BuildRequires:	gettext-tools >= 0.17
 BuildRequires:	glib2-devel >= 1:2.43.4
 BuildRequires:	gtk+3-devel >= 3.0
 BuildRequires:	intltool >= 0.35.0
 BuildRequires:	json-c-devel
 BuildRequires:	libarchive-devel
-BuildRequires:	libproxy-devel
 BuildRequires:	libtool >= 2:2
 BuildRequires:	libxml2-devel >= 2
-BuildRequires:	nettle-devel
 BuildRequires:	newt-devel
-BuildRequires:	nss-devel
 BuildRequires:	pkgconfig
 %{?with_python3:BuildRequires:	python3-devel >= 1:3.6}
 BuildRequires:	rpmbuild(macros) >= 1.612
 BuildRequires:	satyr-devel >= 0.38
+BuildRequires:	sed >= 4.0
 BuildRequires:	systemd-devel >= 1:209
 BuildRequires:	xmlrpc-c-client-devel
 BuildRequires:	xmlrpc-c-devel
 BuildRequires:	xmlto
 %if %{with tests}
-# findmnt
-BuildRequires:	mount
 # /etc/system-release for non-empty os_release content
 BuildRequires:	pld-release >= 3.0-8
-BuildRequires:	sed >= 4.0
 %endif
 Requires:	glib2 >= 1:2.43.4
 Requires:	satyr-libs >= 0.38
@@ -95,7 +89,6 @@ Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-web = %{version}-%{release}
 Requires:	curl-devel
 Requires:	json-c-devel
-Requires:	libproxy-devel
 Requires:	libxml2-devel >= 2
 Requires:	satyr-devel >= 0.38
 Requires:	xmlrpc-c-client-devel
@@ -113,6 +106,10 @@ Summary(pl.UTF-8):	Wiązania Pythona 3 do bibliotek libreport
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 Requires:	python3-libs >= 1:3.6
+Requires:	python3-requests
+Requires:	python3-rpm
+Requires:	python3-satyr
+Requires:	python3-urllib3
 Obsoletes:	libreport-python < 2.1.3-1
 Obsoletes:	python-libreport < 2.11
 
@@ -191,7 +188,6 @@ Summary:	libreport's kerneloops reporter plugin
 Summary(pl.UTF-8):	Wtyczka libreport do zgłoszeń awarii jądra (kerneloops)
 Group:		Libraries
 Requires:	%{name}-web = %{version}-%{release}
-Requires:	curl
 
 %description plugin-kerneloops
 This package contains plugin which sends kernel crash information to
